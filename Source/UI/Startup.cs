@@ -51,6 +51,8 @@ namespace UI
             {
                 endpoints.MapRazorPages();
             });
+
+
         }
     }
 }
