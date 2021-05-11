@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LudoAPI", "LudoAPI\LudoAPI.csproj", "{2DF6DBB3-F80A-4124-892A-384DA33ACDB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{CD9B0A72-4B06-4C06-B09B-39BAA1EE8282}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F92ED68F-DE29-43E3-A8ED-3A0CDBA87421}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2DF6DBB3-F80A-4124-892A-384DA33ACDB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DF6DBB3-F80A-4124-892A-384DA33ACDB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DF6DBB3-F80A-4124-892A-384DA33ACDB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DF6DBB3-F80A-4124-892A-384DA33ACDB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD9B0A72-4B06-4C06-B09B-39BAA1EE8282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD9B0A72-4B06-4C06-B09B-39BAA1EE8282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD9B0A72-4B06-4C06-B09B-39BAA1EE8282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD9B0A72-4B06-4C06-B09B-39BAA1EE8282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F92ED68F-DE29-43E3-A8ED-3A0CDBA87421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F92ED68F-DE29-43E3-A8ED-3A0CDBA87421}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F92ED68F-DE29-43E3-A8ED-3A0CDBA87421}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F92ED68F-DE29-43E3-A8ED-3A0CDBA87421}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FC717352-FB63-45E3-881A-367941C52152}
+	EndGlobalSection
+EndGlobal
