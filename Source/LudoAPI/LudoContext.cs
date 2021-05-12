@@ -15,5 +15,18 @@ namespace LudoAPI
         public DbSet<Board> Board { get; set; }
         public DbSet<Player> Player { get; set; }
         public DbSet<Token> Token { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) // for tests
+        {
+            var token11 = new Token { Id = 1, IsActive = true, Color = TokenColor.Red, Steps = 1, PlayerId = 1 };
+            var token12 = new Token { Id = 2, IsActive = true, Color = TokenColor.Red, Steps = 2, PlayerId = 1 };
+            var token21 = new Token { Id = 3, IsActive = false, Color = TokenColor.Blue, Steps = 0, PlayerId = 2 };
+            var token22 = new Token { Id = 4, IsActive = true, Color = TokenColor.Blue, Steps = 1, PlayerId = 2 };
+            var player1 = new Player { Id = 1, Name = "pl1", BoardId = 1 };
+            var player2 = new Player { Id = 2, Name = "pl2", BoardId = 1 };
+            var game = new Board { Id = 1, BoardName = "game1"};
+            modelBuilder.Entity<Token>().HasData(token11, token12, token21, token22);
+            modelBuilder.Entity<Player>().HasData(player1, player2);
+            modelBuilder.Entity<Board>().HasData(game);
+        }
     }
 }

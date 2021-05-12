@@ -26,6 +26,7 @@ namespace Ludo.API
             services.AddDbContext<LudoContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("LudoDatabase")));
             services.AddControllers();
             services.AddScoped<IBoardRepo, BoardRepo>();
+            services.AddScoped<IPlayerRepo, PlayerRepo>();
 
             services.AddSwaggerGen(c =>
             {
