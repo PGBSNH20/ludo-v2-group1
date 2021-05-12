@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludo.API.Logic;
 
 namespace LudoAPI.Models
 {
-    public enum TokenColor
-    {
-        Blue,
-        Yellow,
-        Red,
-        Green
-    }
     public class Token
     {
         public int Id { get; set; }
