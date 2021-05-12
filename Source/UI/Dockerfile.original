@@ -7,17 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["UI/Ludo.Web.csproj", "UI/"]
-COPY ["LudoAPI/Ludo.API.csproj", "LudoAPI/"]
-RUN dotnet restore "UI/Ludo.Web.csproj"
+COPY ["UI/UI.csproj", "UI/"]
+RUN dotnet restore "UI/UI.csproj"
 COPY . .
 WORKDIR "/src/UI"
-RUN dotnet build "Ludo.Web.csproj" -c Release -o /app/build
+RUN dotnet build "UI.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Ludo.Web.csproj" -c Release -o /app/publish
+RUN dotnet publish "UI.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Ludo.Web.dll"]
+ENTRYPOINT ["dotnet", "UI.dll"]
