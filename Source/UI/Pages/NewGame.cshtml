@@ -1,0 +1,13 @@
+﻿@page
+@model Ludo.Web.Pages.NewGameModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h1>New Game</h1>
+
+<form method="post">
+    Name:
+    <input asp-for="Board.BoardName" />
+    Players (Between 2 and 4)
+    <input asp-for="Players" min="2" max="4" />
+    <input type="submit" />
+</form>

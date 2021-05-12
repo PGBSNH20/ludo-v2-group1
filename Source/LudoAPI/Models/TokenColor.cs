@@ -1,4 +1,4 @@
-﻿namespace Ludo.API.Logic
+﻿namespace LudoAPI.Models
 {
     public enum TokenColor
     {
