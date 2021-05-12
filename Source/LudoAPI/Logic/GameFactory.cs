@@ -120,5 +120,14 @@ namespace Ludo.API.Logic
             }
             return squares;
         }
+        public static List<Token> CreateTokens(TokenColor color) // Create 4 tokense and first token in the list active.
+        {
+            var tempList = new List<Token>();
+            for (int i = 0; i < 4; i++) // Add tokens, first one is set to be active, rest is inactive.
+            {
+                tempList.Add(i == 0 ? new Token { Color = color, IsActive = true } : new Token { Color = color });
+            }
+            return tempList;
+        }
     }
 }
