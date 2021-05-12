@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace LudoAPI.Models
 {
-    public enum TokenColor
-    {
-        Blue,
-        Yellow,
-        Red,
-        Green
-    }
     public class Token
     {
         public int Id { get; set; }

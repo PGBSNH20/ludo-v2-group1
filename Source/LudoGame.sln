@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Web", "UI\Ludo.Web.csp
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F92ED68F-DE29-43E3-A8ED-3A0CDBA87421}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ludo.Test", "Ludo.Test\Ludo.Test.csproj", "{E4FCB114-C5AD-4BE8-81AD-EF7D04E0D8F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ludo.Test", "Ludo.Test\Ludo.Test.csproj", "{E4FCB114-C5AD-4BE8-81AD-EF7D04E0D8F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
