@@ -31,7 +31,7 @@ namespace Ludo.Web.Pages
 
             var response = await _ludoData.AddBoard(Board.BoardName);
 
-            if (response.IsSuccessful)
+            if (response.IsSuccessStatusCode)
                 return RedirectToPage($"Game", new { Board.BoardName, Players });
             return Page();
         }

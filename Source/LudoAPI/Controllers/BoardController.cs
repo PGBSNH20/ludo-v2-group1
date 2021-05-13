@@ -77,7 +77,7 @@ namespace Ludo.API.Controllers
 
             if(result.Exception != null)
                 return BadRequest();
-            return CreatedAtAction("GetBoardByName", new { name = board.BoardName }, board);
+            return Ok(board);
         }
 
         // DELETE: api/Board/5
