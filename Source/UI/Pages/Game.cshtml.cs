@@ -24,6 +24,8 @@ namespace Ludo.Web.Pages
             Players = players;
             //Make API call to get board here
            Board = await _ludoData.GetBoard(boardName);
+           if (Board == null)
+               RedirectToPage("Index");
         }
     }
 }
