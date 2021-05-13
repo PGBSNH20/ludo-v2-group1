@@ -10,13 +10,20 @@ namespace Ludo.Web.Pages
 {
     public class GameModel : PageModel
     {
+        private readonly ILudoDataAccess _ludoData;
+        public GameModel(ILudoDataAccess ludoData)
+        {
+            _ludoData = ludoData;
+        }
+        public Board Board { get; set; }
         public string BoardName { get; set; }
         public int Players { get; set; }
-        public void OnGet(string boardName, int players)
+        public async void OnGet(string boardName, int players)
         {
             BoardName = boardName;
             Players = players;
             //Make API call to get board here
+           Board = await _ludoData.GetBoard(boardName);
         }
     }
 }

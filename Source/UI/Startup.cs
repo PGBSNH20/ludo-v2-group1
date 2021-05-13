@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ludo.API.Middleware;
+using Ludo.Web;
 using Ludo.Web.Hubs;
 
 namespace UI
@@ -37,6 +38,8 @@ namespace UI
                         builder.WithOrigins("http://localhost:5001", "http://localhost:5000");
                     });
             });
+
+            services.AddScoped<ILudoDataAccess, LudoDataAccess>();
 
         }
 
