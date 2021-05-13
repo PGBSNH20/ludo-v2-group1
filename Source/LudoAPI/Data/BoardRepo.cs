@@ -25,7 +25,14 @@ namespace Ludo.API.Data
 
         public async Task<Board> GetBoardByName(string name)
         {
-            return await _context.Board.Where(b => b.BoardName == name).FirstAsync();
+            try
+            {
+                return await _context.Board.Where(b => b.BoardName == name).FirstAsync();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task<Task> UpdateBoard(int id, Board board)

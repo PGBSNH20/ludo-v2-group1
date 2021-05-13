@@ -1,10 +1,10 @@
 version: '3.4'
 
 services:
- ludoapi:
+
+  ludoapi:
     image: ${DOCKER_REGISTRY-}ludoapi
     ports:
-     - 80:80
      - 443:443
     build:
       context: .
@@ -13,7 +13,8 @@ services:
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=https://+:443;http://+:80
         - ASPNETCORE_HTTPS_PORT="443"
- sql-server:
+
+  sql-server:
     image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     ports:
       - "41433:1433"
@@ -23,9 +24,11 @@ services:
       MSSQL_PID: Express
     volumes:
       - ludoVolume:/var/opt/mssql
+
 volumes:
   ludoVolume:
     driver: local
+
 
 
 

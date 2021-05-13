@@ -6,7 +6,7 @@
     <ProjectGuid>f92ed68f-de29-43e3-a8ed-3a0cdba87421</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>ludoapi</DockerServiceName>
+    <DockerServiceName>ludo-web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.yml" />

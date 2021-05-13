@@ -10,6 +10,11 @@ namespace Ludo.Web.Pages
 {
     public class NewGameModel : PageModel
     {
+        private readonly ILudoDataAccess _ludoData;
+        public NewGameModel(ILudoDataAccess ludoData)
+        {
+            _ludoData = ludoData;
+        }
         public void OnGet()
         {
         }
@@ -23,9 +28,12 @@ namespace Ludo.Web.Pages
         {
             if (!ModelState.IsValid)
                 return Page();
-            //Add API functions here
 
-            return RedirectToPage($"Game", new {Board.BoardName, Players});
+            var response = await _ludoData.AddBoard(Board.BoardName);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToPage($"Game", new { Board.BoardName, Players });
+            return Page();
         }
     }
 }
