@@ -15,24 +15,23 @@ namespace Ludo.Web
 {
     public class LudoDataAccess : ILudoDataAccess
     {
-        static readonly HttpClient client = new HttpClient();
+        private readonly HttpClient _client = new();
 
         public async Task<HttpResponseMessage> AddBoard(string boardName)
         {
             var board = GameFactory.CreateBoard(boardName);
             var json = JsonConvert.SerializeObject(board);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync("https://localhost/api/board/", data);
+            HttpResponseMessage response = await _client.PostAsync("https://localhost/api/board/", data);
             return response;
         }
         public async Task<Board> GetBoardAsync(string boardName)
         {
             Board board = null;
-            HttpResponseMessage response = await client.GetAsync($"https://localhost/api/board/{boardName}");
+            HttpResponseMessage response = await _client.GetAsync($"https://localhost/api/board/{boardName}");
+            
             if (response.IsSuccessStatusCode)
-            {
                 board = await response.Content.ReadFromJsonAsync<Board>();
-            }
             return board;
         }
     }

@@ -8,9 +8,13 @@ namespace Ludo.Web.Hubs
 {
     public class GameHub : Hub
     {
-        public async Task SendMessage(string user, string message)
+        public async Task JoinGroup(string group)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await Groups.AddToGroupAsync(Context.ConnectionId, group);
+        }
+        public async Task SendMessage(string group, string user, string message)
+        {
+            await Clients.Group(group).SendAsync("ReceiveMessage", user, message);
         }
     }
 }
