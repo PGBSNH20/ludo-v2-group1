@@ -1,11 +1,13 @@
 ﻿"use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+var groupName = document.getElementById("groupName").innerHTML; // Set the group name by getting the name of the board.
 
 //Disable send button until connection is established
-document.getElementById("sendButton").disabled = true;
+document.getElementById("sendButton").disabled = true; 
 
-connection.on("ReceiveMessage", function (user, message) {
+
+connection.on("ReceiveMessage", function (user, message) { // A connection on SingalR method SendMessage returns a string in the message list html
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + " rolls " + msg;
     var li = document.createElement("li");
@@ -13,20 +15,34 @@ connection.on("ReceiveMessage", function (user, message) {
     document.getElementById("messagesList").appendChild(li);
 });
 
-connection.start().then(function () {
-    document.getElementById("sendButton").disabled = false;
+connection.start().then(function () { // Start connection and enable dice button
 }).catch(function (err) {
     return console.error(err.toString());
 });
 
-document.getElementById("sendButton").addEventListener("click", async  function (event) {
-    var user = document.getElementById("userInput").value;
-    var s = await get();
-
-    var message = s.toString();
-    connection.invoke("SendMessage", user, message).catch(function (err) {
+document.getElementById("userSubmit").addEventListener("click", function(event) {
+    connection.invoke("JoinGroup", groupName).catch(function (err) {
         return console.error(err.toString());
     });
+    var x = document.getElementById("userInputRow");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+    document.getElementById("sendButton").disabled = false;
+});
+
+
+document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
+    var user = document.getElementById("userInput").value;
+    var s = await get();
+    var message = s.toString();
+
+    connection.invoke("SendMessage",groupName, user, message).catch(function (err) {
+        return console.error(err.toString());
+    });
+
     event.preventDefault();
 });
 

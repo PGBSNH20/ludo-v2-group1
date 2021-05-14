@@ -24,7 +24,7 @@ namespace Ludo.Web.Pages
         [BindProperty]
         public int Players { get; set; } // Remember how many players were set to participate
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync() // After submitting form, create a board and add it to the database.
         {
             if (!ModelState.IsValid)
                 return Page();

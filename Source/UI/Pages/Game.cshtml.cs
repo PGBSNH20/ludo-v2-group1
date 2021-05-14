@@ -18,7 +18,7 @@ namespace Ludo.Web.Pages
         public Board Board { get; set; }
         public string BoardName { get; set; }
         public int Players { get; set; }
-        public async Task<ActionResult> OnGetAsync(string boardName, int players)
+        public async Task<ActionResult> OnGetAsync(string boardName, int players) // Get name from url, make API call to find matching board in database.
         {
             BoardName = boardName;
             Players = players;
