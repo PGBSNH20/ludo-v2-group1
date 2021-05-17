@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using LudoAPI.Models;
@@ -22,6 +23,7 @@ namespace Ludo.Web.Pages
         [BindProperty]
         public Board Board { get; set; }
         [BindProperty]
+        [Required, MinLength(2), MaxLength(4)]
         public int Players { get; set; } // Remember how many players were set to participate
 
         public async Task<IActionResult> OnPostAsync() // After submitting form, create a board and add it to the database.

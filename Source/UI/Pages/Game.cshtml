@@ -2,7 +2,7 @@
 @model Ludo.Web.Pages.GameModel
 @{
 }
-
+<link rel="stylesheet" href="~/css/ludo.css" />
 <h2 id="groupName">@Model.BoardName</h2>
 <h3>Players:</h3><h3 id="playerCount">0</h3>
 <h3>Id: @Model.Board.Id</h3>
@@ -11,14 +11,14 @@
     <div class="row">&nbsp;</div>
     <div class="row" id="userInputRow">
         <div class="col-2">Enter player name:</div>
-        <div class="col-4"><input type="text" id="userInput" /></div>
-        <div class="col-4"><input type="button" id="userSubmit" value="Connect to game" /></div>
+        <div class="col-4"><input type="text" id="userInput" class="form-control" /></div>
+        <div class="col-4"><input type="button" id="userSubmit" value="Connect to game" class="btn btn-primary" /></div>
     </div>
 
     <div class="row">&nbsp;</div>
     <div class="row">
         <div class="col-6">
-            <input type="button" id="sendButton" value="Roll Dice" />
+            <input type="button" id="sendButton" value="Roll Dice" class="btn btn-warning" />
         </div>
     </div>
 </div>
