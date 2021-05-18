@@ -21,6 +21,7 @@ namespace Ludo.Web.Pages
         {
             _ludoData = ludoData;
         }
+
         public async Task<ActionResult> OnGetAsync(string gameName) // Get name from url, make API call to find matching board in database.
         {
             //Make API call to get board here

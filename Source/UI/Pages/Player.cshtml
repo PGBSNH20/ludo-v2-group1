@@ -25,7 +25,12 @@
         Name:
         <input asp-for="nameColor.PlayerName" />
         Token Color:
-        <input asp-for="nameColor.TokenColor" />
+        <select asp-for="nameColor.TokenColor">
+            <option value="red">Red</option>
+            <option value="green">Green</option>
+            <option value="blue">Blue</option>
+            <option value="yellow">Yellow</option>
+        </select>
         <input type="submit" asp-page-handler= "AddPlayer"  value="Add" class="btn-primary"/>
     </form>
 }
