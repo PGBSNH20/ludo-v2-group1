@@ -1,10 +1,12 @@
-#### As a **user**
+#### As a **user** on the website
 
-- I can choose to start a new game or load a saved game.
-- I can choose the number of players (2-4).
-- I can save the game (when?).
-- I can make a move in the game:
+- I can choose to start a new game or join a game.
+- I can choose the number of players (2-4) when creating a game.
+- I can save the game (when?). 
+
+#### As a **user** playing the game
 - I can roll the dice.
+- I can make a move in the game:
 - I can choose a token to make a move with.
 - I  can move a token out of the base onto the start position (if the dice hits 6).
 - I  can move a token 1 to 6 spaces along the path according to the dice value.
