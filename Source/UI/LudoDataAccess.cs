@@ -34,11 +34,29 @@ namespace Ludo.Web
                 board = await response.Content.ReadFromJsonAsync<Board>();
             return board;
         }
+        public async Task<Board> GetGameAsync(string gameName)
+        {
+            Board board = null;
+            HttpResponseMessage response = await _client.GetAsync($"https://localhost/api/game/{gameName}");
+
+            if (response.IsSuccessStatusCode)
+                board = await response.Content.ReadFromJsonAsync<Board>();
+            return board;
+        }
+        public async Task<HttpResponseMessage> AddPlayer(string gameName, PlayerTokenColor nameColor)
+        {
+            var json = JsonConvert.SerializeObject(nameColor);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.PostAsync($"https://localhost/api/players/{gameName}", data);
+            return response;
+        }
     }
 
     public interface ILudoDataAccess
     {
         Task<HttpResponseMessage> AddBoard(string boardName);
         Task<Board> GetBoardAsync(string path);
+        Task<Board> GetGameAsync(string boardName);
+        Task<HttpResponseMessage> AddPlayer(string gameName, PlayerTokenColor nameColor);
     }
 }

@@ -1,0 +1,38 @@
+﻿@page "{gameName}"
+@model Ludo.Web.Pages.PlayerModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h1>Players in @Model.Board.BoardName:</h1>
+@if (Model.Players.Count == 0)
+{
+    <p>there are no players in the game yet</p>
+}
+<table class="tablePlayers">
+    <tr><td>Name</td><td>Tokens color</td></tr>
+    @foreach (var p in Model.Players)
+    {
+        var color = p.Tokens[0].Color.ToString();
+        <tr>
+            <td>@p.Name</td>
+            <td>@color</td>
+        </tr>
+    }
+</table>
+
+@if (Model.Players.Count < 4)
+{
+    <form method="post">
+        Name:
+        <input asp-for="nameColor.PlayerName" />
+        Token Color:
+        <input asp-for="nameColor.TokenColor" />
+        <input type="submit" asp-page-handler= "AddPlayer"  value="Add" class="btn-primary"/>
+    </form>
+}
+@if(Model.Players.Count >=2)
+{
+    <br/>
+    <form method="post">
+        <input type="submit" asp-page-handler= "StartGame" value="Start game" class="btn-primary"/>
+    </form>
+}

@@ -18,7 +18,7 @@ namespace Ludo.Test
         public async Task When_Posting_Player_Expect_OKAsync()
         {
             var playerRepo = A.Fake<IPlayerRepo>();
-            var controller = new PlayerController(playerRepo);
+            var controller = new PlayersController(playerRepo);
 
             string playerName = "player1";
             string gameName = "game1";
@@ -35,7 +35,7 @@ namespace Ludo.Test
         public async Task When_Posting_Bad_Player_Expect_BadRequestAsync()
         {
             var playerRepo = A.Fake<IPlayerRepo>();
-            var controller = new PlayerController(playerRepo);
+            var controller = new PlayersController(playerRepo);
 
             string playerName = "player1";
             string gameName = "asdfa";

@@ -1,10 +1,9 @@
-﻿@page "{boardname?}"
+﻿@page "{boardName?}"
 @model Ludo.Web.Pages.GameModel
 @{
 }
-
 <h2 id="groupName">@Model.BoardName</h2>
-<h3>Players:</h3><h3 id="playerCount">0</h3>
+<h3 id="playerCount">Players: @Model.Board.Players.Count</h3>
 <h3>Id: @Model.Board.Id</h3>
 
 <div class="container">
