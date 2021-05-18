@@ -25,9 +25,15 @@ namespace Ludo.API.Data
                 if (board == null) return Task.FromException(new ArgumentException("There is no such game."));
                 
                 var players = _context.Player.Where(p => p.BoardId == board.Id).Include(t => t.Tokens).ToList();
+                
                 // Validate number of players
                 if (players.Count() >= 4) return Task.FromException(new ArgumentException("Exceeded the number of players"));
 
+                //Validate player name
+                string sameNameInDB = players.Select(p => p.Name).Where(name => name.ToLower() == playerName.ToLower()).FirstOrDefault();
+                if (String.IsNullOrEmpty(playerName)|| !String.IsNullOrEmpty(sameNameInDB)|| String.IsNullOrWhiteSpace(playerName))
+                    return Task.FromException(new ArgumentException("Choose a different name"));
+               
                 // Validate tokens color
                 TokenColor selectedColor = Utility.ColorFromStringToEnum(color);
                 if (HasThisColor(selectedColor, players)) return Task.FromException(new ArgumentException("This color has already been chosen by another player"));
