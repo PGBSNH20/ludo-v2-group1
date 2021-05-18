@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security;
@@ -50,6 +52,15 @@ namespace Ludo.Web
             HttpResponseMessage response = await _client.PostAsync($"https://localhost/api/players/{gameName}", data);
             return response;
         }
+        public async Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor)
+        {
+            var json = JsonConvert.SerializeObject(nameColor);
+            
+            var client = new RestClient("https://localhost/api/players/");
+            var request = new RestRequest($"{gameName}", Method.POST).AddJsonBody(json);
+            var response = await client.ExecuteAsync(request);
+           return (RestResponse)response;
+        }
     }
 
     public interface ILudoDataAccess
@@ -58,5 +69,6 @@ namespace Ludo.Web
         Task<Board> GetBoardAsync(string path);
         Task<Board> GetGameAsync(string boardName);
         Task<HttpResponseMessage> AddPlayer(string gameName, PlayerTokenColor nameColor);
+        Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor);
     }
 }

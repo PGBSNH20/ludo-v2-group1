@@ -27,10 +27,11 @@ namespace Ludo.API.Data
                 var players = _context.Player.Where(p => p.BoardId == board.Id).Include(t => t.Tokens).ToList();
                 // Validate number of players
                 if (players.Count() >= 4) return Task.FromException(new ArgumentException("Exceeded the number of players"));
+
                 // Validate tokens color
                 TokenColor selectedColor = Utility.ColorFromStringToEnum(color);
                 if (HasThisColor(selectedColor, players)) return Task.FromException(new ArgumentException("This color has already been chosen by another player"));
-                
+
                 var player = new Player();
                 player.Name = playerName;
                 player.Tokens = Logic.GameFactory.CreateTokens(selectedColor);

@@ -3,13 +3,13 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <h1>Players in @Model.Board.BoardName:</h1>
-@if (Model.Players.Count == 0)
+@if (Model.Board.Players.Count == 0)
 {
     <p>there are no players in the game yet</p>
 }
 <table class="tablePlayers">
     <tr><td>Name</td><td>Tokens color</td></tr>
-    @foreach (var p in Model.Players)
+    @foreach (var p in Model.Board.Players)
     {
         var color = p.Tokens[0].Color.ToString();
         <tr>
@@ -19,25 +19,26 @@
     }
 </table>
 
-@if (Model.Players.Count < 4)
+@if (Model.Board.Players.Count < 4)
 {
     <form method="post">
         Name:
-        <input asp-for="nameColor.PlayerName" />
+        <input asp-for="NameColor.PlayerName" />
         Token Color:
-        <select asp-for="nameColor.TokenColor">
+        <select asp-for="NameColor.TokenColor">
             <option value="red">Red</option>
             <option value="green">Green</option>
             <option value="blue">Blue</option>
             <option value="yellow">Yellow</option>
         </select>
-        <input type="submit" asp-page-handler= "AddPlayer"  value="Add" class="btn-primary"/>
+        <input type="submit" asp-page-handler="AddPlayer" value="Add" class="btn-primary" />
     </form>
 }
-@if(Model.Players.Count >=2)
+<p>@Model.ErrorMessage</p>
+@if (Model.Board.Players.Count >= 2)
 {
-    <br/>
+    <br />
     <form method="post">
-        <input type="submit" asp-page-handler= "StartGame" value="Start game" class="btn-primary"/>
+        <input type="submit" asp-page-handler="StartGame" value="Start game" class="btn-primary" />
     </form>
 }

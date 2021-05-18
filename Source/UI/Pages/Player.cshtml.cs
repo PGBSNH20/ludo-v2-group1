@@ -11,12 +11,10 @@ namespace Ludo.Web.Pages
     public class PlayerModel : PageModel
     {
         private readonly ILudoDataAccess _ludoData;
-        [BindProperty]
         public Board Board { get; set; }
         [BindProperty]
-        public List<Player> Players { get; set; }
-        [BindProperty]
-        public PlayerTokenColor nameColor { get; set; }
+        public PlayerTokenColor NameColor { get; set; }
+        public string ErrorMessage { get; set; }
         public PlayerModel(ILudoDataAccess ludoData)
         {
             _ludoData = ludoData;
@@ -26,10 +24,8 @@ namespace Ludo.Web.Pages
         {
             //Make API call to get board here
             Board = await _ludoData.GetGameAsync(gameName);
-
             if (Board == null)
                 return RedirectToPage("Index");
-            Players = Board.Players;
             return Page();
         }
         public async Task<IActionResult> OnPostAddPlayerAsync(string gameName)
@@ -37,9 +33,14 @@ namespace Ludo.Web.Pages
             if (!ModelState.IsValid)
                 return Page();
 
-            var response = await _ludoData.AddPlayer(gameName, nameColor);
-            string url = Url.Page($"Player", OnGetAsync(gameName));
-            return Redirect(url);
+            var response = await _ludoData.PostPlayer(gameName, NameColor);
+            ErrorMessage = response.Content;
+            //Make API call to get board
+            Board = await _ludoData.GetGameAsync(gameName);
+            if (Board == null)
+                return RedirectToPage("Index");
+            
+            return Page();
         }
         public ActionResult OnPostStartGame(string gameName)
         {

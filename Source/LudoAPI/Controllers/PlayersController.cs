@@ -10,7 +10,7 @@ namespace Ludo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayersController : Controller
+    public class PlayersController : ControllerBase
     {
         private readonly IPlayerRepo _playerRepo;
 
