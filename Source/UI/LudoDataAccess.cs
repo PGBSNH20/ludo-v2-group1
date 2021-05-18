@@ -45,13 +45,6 @@ namespace Ludo.Web
                 board = await response.Content.ReadFromJsonAsync<Board>();
             return board;
         }
-        public async Task<HttpResponseMessage> AddPlayer(string gameName, PlayerTokenColor nameColor)
-        {
-            var json = JsonConvert.SerializeObject(nameColor);
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _client.PostAsync($"https://localhost/api/players/{gameName}", data);
-            return response;
-        }
         public async Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor)
         {
             var json = JsonConvert.SerializeObject(nameColor);
@@ -68,7 +61,6 @@ namespace Ludo.Web
         Task<HttpResponseMessage> AddBoard(string boardName);
         Task<Board> GetBoardAsync(string path);
         Task<Board> GetGameAsync(string boardName);
-        Task<HttpResponseMessage> AddPlayer(string gameName, PlayerTokenColor nameColor);
         Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor);
     }
 }
