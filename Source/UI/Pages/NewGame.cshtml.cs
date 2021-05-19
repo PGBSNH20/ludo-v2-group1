@@ -23,7 +23,7 @@ namespace Ludo.Web.Pages
         [BindProperty]
         public Board Board { get; set; }
 
-        public async Task<IActionResult> OnPostAsync() // After submitting form, create a board and add it to the database if board with such name does not already exist
+        public async Task<IActionResult> OnPostAsync() // After submitting form, create a board and add it to the database if the board with such name does not already exist
         {
             if (!ModelState.IsValid)
                 return Page();
