@@ -28,5 +28,27 @@ namespace Ludo.API.Controllers
                 return BadRequest(result.Exception.Message);
             return Ok();
         }
+
+        [HttpGet("{gameName}")]
+        public async Task<IActionResult> GetPlayers(string gameName)
+        {
+            var result = await _playerRepo.GetPlayers(gameName);
+            return Ok(result);
+        }
+
+        [HttpPut("turn/{gameName}")]
+        public async Task<IActionResult> AddPlayerTurn(string gameName, [FromBody]string player)
+        {
+            await _playerRepo.AddPlayerTurnName(gameName, player);
+            return Ok();
+        }
+        [HttpGet("turn/{gameName}")]
+        public async Task<IActionResult> GetPlayerTurn(string gameName, string player)
+        {
+            string name = await _playerRepo.GetPlayerTurn(gameName);
+            return Ok(name);
+        }
+
+
     }
 }

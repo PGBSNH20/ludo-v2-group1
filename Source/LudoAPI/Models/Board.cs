@@ -20,6 +20,7 @@ namespace LudoAPI.Models
         public List<Square> Squares { get; set; } = new();
 
         public int PlayerIDLastMadeMove { get; set; } // ID of the player who made the last move in the game
+        public string PlayerTurnName { get; set; }
 
         [NotMapped]
         public Player? LastMadeMove { get; set; } // A player who made the last move in the game
