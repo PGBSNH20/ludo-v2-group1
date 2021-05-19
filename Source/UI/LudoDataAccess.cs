@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security;
@@ -34,11 +36,31 @@ namespace Ludo.Web
                 board = await response.Content.ReadFromJsonAsync<Board>();
             return board;
         }
+        public async Task<Board> GetGameAsync(string gameName)
+        {
+            Board board = null;
+            HttpResponseMessage response = await _client.GetAsync($"https://localhost/api/game/{gameName}");
+
+            if (response.IsSuccessStatusCode)
+                board = await response.Content.ReadFromJsonAsync<Board>();
+            return board;
+        }
+        public async Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor)
+        {
+            var json = JsonConvert.SerializeObject(nameColor);
+            
+            var client = new RestClient("https://localhost/api/players/");
+            var request = new RestRequest($"{gameName}", Method.POST).AddJsonBody(json);
+            var response = await client.ExecuteAsync(request);
+           return (RestResponse)response;
+        }
     }
 
     public interface ILudoDataAccess
     {
         Task<HttpResponseMessage> AddBoard(string boardName);
         Task<Board> GetBoardAsync(string path);
+        Task<Board> GetGameAsync(string boardName);
+        Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor);
     }
 }

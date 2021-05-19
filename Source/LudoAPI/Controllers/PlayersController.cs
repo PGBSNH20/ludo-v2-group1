@@ -10,20 +10,20 @@ namespace Ludo.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PlayerController : Controller
+    public class PlayersController : ControllerBase
     {
         private readonly IPlayerRepo _playerRepo;
 
-        public PlayerController(IPlayerRepo playerRepo)
+        public PlayersController(IPlayerRepo playerRepo)
         {
             _playerRepo = playerRepo;
         }
-        // POST: api/Player?playerName=Bob&gameName=game1&color=red
+        // POST: api/Players/{gameName}
         // Adds a new player to an existing game
-        [HttpPost]
-        public async Task<IActionResult> PostPlayer(string playerName, string gameName, string color)
+        [HttpPost("{gameName}")]
+        public async Task<IActionResult> PostPlayer(string gameName, PlayerTokenColor playerTokenColor)
         {
-            var result = await _playerRepo.AddPlayer(playerName, gameName, color);
+            var result = await _playerRepo.AddPlayer(playerTokenColor.PlayerName, gameName, playerTokenColor.TokenColor);
             if (result.Exception != null)
                 return BadRequest(result.Exception.Message);
             return Ok();

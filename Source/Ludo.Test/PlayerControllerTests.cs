@@ -2,6 +2,7 @@
 using Ludo.API.Controllers;
 using Ludo.API.Data;
 using Ludo.API.Logic;
+using LudoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -18,15 +19,15 @@ namespace Ludo.Test
         public async Task When_Posting_Player_Expect_OKAsync()
         {
             var playerRepo = A.Fake<IPlayerRepo>();
-            var controller = new PlayerController(playerRepo);
-
-            string playerName = "player1";
+            var controller = new PlayersController(playerRepo);
+            
+            var playerTokenColor = new PlayerTokenColor { PlayerName = "player1", TokenColor = "red" };  
             string gameName = "game1";
-            string color = "red";
-            A.CallTo(() => playerRepo.AddPlayer(playerName, gameName, color))
+
+            A.CallTo(() => playerRepo.AddPlayer(playerTokenColor.PlayerName, gameName, playerTokenColor.TokenColor))
                 .Returns(Task.CompletedTask);
 
-            var actionResult = await controller.PostPlayer(playerName, gameName, color);
+            var actionResult = await controller.PostPlayer(gameName, playerTokenColor);
 
             Assert.IsType<OkResult>(actionResult);
         }
@@ -35,15 +36,15 @@ namespace Ludo.Test
         public async Task When_Posting_Bad_Player_Expect_BadRequestAsync()
         {
             var playerRepo = A.Fake<IPlayerRepo>();
-            var controller = new PlayerController(playerRepo);
-
-            string playerName = "player1";
+            var controller = new PlayersController(playerRepo);
+       
+            var playerTokenColor = new PlayerTokenColor { PlayerName = "player1", TokenColor = "red" };
             string gameName = "asdfa";
-            string color = "red";
-            A.CallTo(() => playerRepo.AddPlayer(playerName, gameName, color))
+       
+            A.CallTo(() => playerRepo.AddPlayer(playerTokenColor.PlayerName, gameName, playerTokenColor.TokenColor))
                 .Returns(Task.FromException(new ArgumentException("Bad request")));
 
-            var actionResult = await controller.PostPlayer(playerName, gameName, color);
+            var actionResult = await controller.PostPlayer(gameName, playerTokenColor);
 
             Assert.IsType<BadRequestObjectResult>(actionResult);
         }

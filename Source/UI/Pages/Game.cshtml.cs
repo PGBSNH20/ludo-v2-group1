@@ -18,14 +18,13 @@ namespace Ludo.Web.Pages
         public Board Board { get; set; }
         public string BoardName { get; set; }
         public int Players { get; set; }
-        public async Task<ActionResult> OnGetAsync(string boardName, int players) // Get name from url, make API call to find matching board in database.
+        public async Task<ActionResult> OnGetAsync(string boardName) // Get name from url, make API call to find matching board in database.
         {
             BoardName = boardName;
-            Players = players;
             //Make API call to get board here
-            Board = await _ludoData.GetBoardAsync(boardName);
+            Board = await _ludoData.GetGameAsync(boardName);
             if (Board == null)
-               return RedirectToPage("Index");
+                return RedirectToPage("Index");
 
             return Page();
         }

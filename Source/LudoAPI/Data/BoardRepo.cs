@@ -34,7 +34,7 @@ namespace Ludo.API.Data
                 return null;
             }
         }
-
+        
         public async Task<Task> UpdateBoard(int id, Board board)
         {
             if (id != board.Id)
