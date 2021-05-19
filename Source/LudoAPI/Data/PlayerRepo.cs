@@ -42,6 +42,7 @@ namespace Ludo.API.Data
                 player.Name = playerName;
                 player.Tokens = Logic.GameFactory.CreateTokens(selectedColor);
                 board.Players.Add(player);
+                board.PlayerTurnName = player.Name;
                 await _context.SaveChangesAsync();
                 return Task.CompletedTask;
             }
