@@ -2,10 +2,10 @@
 @model Ludo.Web.Pages.NewGameModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<h1>New Game</h1>
+<h1>Game</h1>
 
 <form method="post">
     Name:
-    <input asp-for="Board.BoardName" />
+    <input asp-for="Board.BoardName" required/>
     <input type="submit" class="btn-primary" />
 </form>
