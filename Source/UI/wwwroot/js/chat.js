@@ -24,6 +24,18 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
     connection.invoke("JoinGroup", groupName).catch(function (err) {
         return console.error(err.toString());
     });
+
+    var radios = document.querySelectorAll('input[type="radio"]');
+    var selection;
+    for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            selection=radios[i].value;
+        }
+    }
+
+    document.getElementById("selectedPlayer").innerHTML = selection;
+    document.getElementById("selectedPlayer").style.display = 'block';
+
     var x = document.getElementById("userInputRow");
     if (x.style.display === "none") {
         x.style.display = "block";
@@ -35,7 +47,7 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
 
 
 document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
-    var user = document.getElementById("userInput").value;
+    var user = document.getElementById("selectedPlayer").innerHTML;
     var s = await get();
     var message = s.toString();
 
