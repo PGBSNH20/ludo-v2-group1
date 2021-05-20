@@ -19,7 +19,7 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
 
 connection.on("GetPlayerTurn", function(playerName) {
     document.getElementById("playerTurn").innerHTML = "Player Turn - " + playerName;
-    var user = document.getElementById("userInput").value;
+    var user = document.getElementById("selectedPlayer").innerHTML;
 
     document.getElementById("sendButton").disabled = true;
 
@@ -57,9 +57,9 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
         x.style.display = "none";
     }
     
-    var user = document.getElementById("userInput").value;
-    if(user == playerTurn)
-        document.getElementById("sendButton").disabled = false;
+    //var user = document.getElementById("userInput").value;
+    //if(user == playerTurn)
+    //    document.getElementById("sendButton").disabled = false;
 
     connection.invoke("PlayerTurn", groupName).catch(function(err) {
         return console.error(err.toString());
@@ -69,7 +69,7 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
 
 document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
     var user = document.getElementById("selectedPlayer").innerHTML;
-    var s = await get();
+    var s = await getDice();
     var message = s.toString();
     
     connection.invoke("AddPlayerTurn", groupName, user).catch(function (err) {
