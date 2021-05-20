@@ -2,7 +2,9 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 var groupName = document.getElementById("groupName").innerHTML; // Set the group name by getting the name of the board.
-
+var playerTurn = null;
+var playerList = null;
+var playerTurnId = 0;
 //Disable send button until connection is established
 document.getElementById("sendButton").disabled = true; 
 
@@ -13,6 +15,18 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
+});
+
+connection.on("GetPlayerTurn", function(playerName) {
+    document.getElementById("playerTurn").innerHTML = "Player Turn - " + playerName;
+    var user = document.getElementById("selectedPlayer").innerHTML;
+
+    document.getElementById("sendButton").disabled = true;
+
+    var n = playerName.localeCompare(user);
+    console.log(n);
+    if(n == 0)
+        document.getElementById("sendButton").disabled = false;
 });
 
 connection.start().then(function () { // Start connection and enable dice button
@@ -42,26 +56,41 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
     } else {
         x.style.display = "none";
     }
-    document.getElementById("sendButton").disabled = false;
-});
+    
+    //var user = document.getElementById("userInput").value;
+    //if(user == playerTurn)
+    //    document.getElementById("sendButton").disabled = false;
 
-
-document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
-    var user = document.getElementById("selectedPlayer").innerHTML;
-    var s = await get();
-    var message = s.toString();
-
-    connection.invoke("SendMessage",groupName, user, message).catch(function (err) {
+    connection.invoke("PlayerTurn", groupName).catch(function(err) {
         return console.error(err.toString());
     });
 
+});
+
+document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
+    var user = document.getElementById("selectedPlayer").innerHTML;
+    var s = await getDice();
+    var message = s.toString();
+    
+    connection.invoke("AddPlayerTurn", groupName, user).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("sendButton").disabled = true;
+    connection.invoke("SendMessage", groupName, user, message).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    connection.invoke("PlayerTurn", groupName).catch(function(err) {
+        return console.error(err.toString());
+    });
+    
     event.preventDefault();
 });
 
 
-async function get() {
+async function getDice() {
     var msg = await fetch('https://localhost/api/dice');
-    var data = msg.json();
-    console.log(await data);
-    return await data;
+    var data = await msg.json();
+    return data;
 }

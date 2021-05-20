@@ -30,7 +30,7 @@ namespace Ludo.API.Data
                 if (players.Count() >= 4) return Task.FromException(new ArgumentException("Exceeded the number of players"));
 
                 //Validate player name
-                string sameNameInDB = players.Select(p => p.Name).Where(name => name.ToLower() == playerName.ToLower()).FirstOrDefault();
+                string sameNameInDB = players.Select(p => p.Name).FirstOrDefault(name => name.ToLower() == playerName.ToLower());
                 if (String.IsNullOrEmpty(playerName)|| !String.IsNullOrEmpty(sameNameInDB)|| String.IsNullOrWhiteSpace(playerName))
                     return Task.FromException(new ArgumentException("Choose a different name"));
                
@@ -42,6 +42,7 @@ namespace Ludo.API.Data
                 player.Name = playerName;
                 player.Tokens = Logic.GameFactory.CreateTokens(selectedColor);
                 board.Players.Add(player);
+                board.PlayerTurnName = player.Name;
                 await _context.SaveChangesAsync();
                 return Task.CompletedTask;
             }
@@ -50,6 +51,26 @@ namespace Ludo.API.Data
                 return Task.FromException(new ArgumentException("Bad request"));
             }
 
+        }
+        public async Task<List<Player>> GetPlayers(string gameName)
+        {
+           return await _context.Board.Where(n => n.BoardName == gameName).Include(p => p.Players).SelectMany(p => p.Players).ToListAsync();
+        }
+        public async Task<string> GetPlayerTurn(string gameName)
+        {
+            Board board = await _context.Board.FirstAsync(n => n.BoardName == gameName);
+            return board.PlayerTurnName;
+        }
+        public async Task<Task> AddPlayerTurnName(string gameName, string playerName)
+        {
+            Board board = await _context.Board.Where(n => n.BoardName == gameName).Include(p => p.Players).FirstAsync();
+            var list = board.Players;
+            int index = list.FindIndex(x => x.Name.ToLower().Equals(playerName.ToLower()));
+            if (index + 1 > list.Count -1)
+                index = -1;
+            board.PlayerTurnName = list[index + 1].Name;
+            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
         private static bool HasThisColor(TokenColor color, List<Player> players)
         {
