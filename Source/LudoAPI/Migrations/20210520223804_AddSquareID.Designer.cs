@@ -3,14 +3,16 @@ using LudoAPI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LudoAPI.Migrations
 {
     [DbContext(typeof(LudoContext))]
-    partial class LudoContextModelSnapshot : ModelSnapshot
+    [Migration("20210520223804_AddSquareID")]
+    partial class AddSquareID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,13 +75,13 @@ namespace LudoAPI.Migrations
                         {
                             Id = 1,
                             BoardId = 1,
-                            Name = "playerRed"
+                            Name = "pl1"
                         },
                         new
                         {
                             Id = 2,
                             BoardId = 1,
-                            Name = "playerBlue"
+                            Name = "pl2"
                         });
                 });
 
@@ -127,7 +129,7 @@ namespace LudoAPI.Migrations
                             Color = 2,
                             IsActive = true,
                             PlayerId = 1,
-                            SquareID = 2,
+                            SquareID = 0,
                             Steps = 2
                         },
                         new
@@ -145,7 +147,7 @@ namespace LudoAPI.Migrations
                             Color = 0,
                             IsActive = true,
                             PlayerId = 2,
-                            SquareID = 30,
+                            SquareID = 0,
                             Steps = 1
                         });
                 });

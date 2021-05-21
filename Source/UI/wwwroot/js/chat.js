@@ -5,9 +5,11 @@ var groupName = document.getElementById("groupName").innerHTML; // Set the group
 var playerTurn = null;
 var playerList = null;
 var playerTurnId = 0;
+
+var colors = ["b", "y", "r", "g"];
+
 //Disable send button until connection is established
 document.getElementById("sendButton").disabled = true; 
-
 
 connection.on("ReceiveMessage", function (user, message) { // A connection on SingalR method SendMessage returns a string in the message list html
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -22,7 +24,6 @@ connection.on("GetPlayerTurn", function(playerName) {
     var user = document.getElementById("selectedPlayer").innerHTML;
 
     document.getElementById("sendButton").disabled = true;
-
     var n = playerName.localeCompare(user);
     console.log(n);
     if(n == 0)
@@ -38,7 +39,6 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
     connection.invoke("JoinGroup", groupName).catch(function (err) {
         return console.error(err.toString());
     });
-
     var radios = document.querySelectorAll('input[type="radio"]');
     var selection;
     for (var i = 0; i < radios.length; i++) {
@@ -93,4 +93,30 @@ async function getDice() {
     var msg = await fetch('https://localhost/api/dice');
     var data = await msg.json();
     return data;
+}
+
+window.onload = UpdateBoard();
+
+async function UpdateBoard() {
+    var boardAnswer = await fetch('https://localhost/api/Game/' + groupName);
+    var board = await boardAnswer.json();
+
+    console.log(board);
+    for (var i = 0; i < board.players.length; i++)
+    {
+        for (var j = 0; j < board.players[i].tokens.length; j++) {
+            var token = board.players[i].tokens[j];
+            var id = token.squareID;
+            var color = token.color;
+            if (token.isActive) {
+                var colorTokenClass = colors[color] + '-token';
+                document.getElementById(id).classList.add(colorTokenClass);
+            }
+            // TODO:
+            // isActive== false .....
+            // block
+            // color cells
+            // start cells
+        }
+    }
 }

@@ -12,7 +12,8 @@ namespace LudoAPI.Models
         public int Id { get; set; }
         public int PlayerId { get; set; }
         public bool IsActive { get; set; } // False - token is on the base; true - token is in play; if a token has reached finish it removes from the game
-        public int Steps { get; set; } // The number of squares that token has passed. Steps kan be from 0 to 60
+        public int Steps { get; set; } // The number of squares that token has passed. Steps kan be from 0 to 56
+        public int SquareID { get; set; }
         public TokenColor Color { get; set; }
 
         [NotMapped]

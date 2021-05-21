@@ -33,15 +33,15 @@ namespace Ludo.API.Logic
             switch (tokenColor) // Set starting position
             {
                 case TokenColor.Blue:
-                    board.Squares[42].Occupants.Add(player.Tokens[0]);
+                    board.Squares[39].Occupants.Add(player.Tokens[0]);
                     break;
 
                 case TokenColor.Yellow:
-                    board.Squares[28].Occupants.Add(player.Tokens[0]);
+                    board.Squares[26].Occupants.Add(player.Tokens[0]);
                     break;
 
                 case TokenColor.Green:
-                    board.Squares[14].Occupants.Add(player.Tokens[0]);
+                    board.Squares[13].Occupants.Add(player.Tokens[0]);
                     break;
 
                 case TokenColor.Red:
@@ -54,20 +54,20 @@ namespace Ludo.API.Logic
 
         public static int[] CreateRoute(int delta, int startColor) // Create array with squareIDs that token needs to pass through. Delta and startColor depends on tokens color.
         {
-            int[] route = new int[61];
-            for (int i = 0; i < 55; i++)
+            int[] route = new int[57];
+            for (int i = 0; i < 51; i++)
             {
                 int index = i + delta;
-                if (index <= 55)
+                if (index <= 51)
                 {
                     route[i] = index;
                 }
                 else
                 {
-                    route[i] = index - 56;
+                    route[i] = index - 52;
                 }
             }
-            for (int i = 55; i < 61; i++)
+            for (int i = 51; i < 57; i++)
             {
                 route[i] = startColor;
                 startColor++;
@@ -78,20 +78,20 @@ namespace Ludo.API.Logic
 
         public static int[] GetRoute(TokenColor color)
         {
-            int[] route = new int[61];
+            int[] route = new int[57];
 
             switch (color) // Set the route depending on token color
             {
                 case TokenColor.Blue:
-                    route = CreateRoute(42, 401);
+                    route = CreateRoute(39, 401);
                     break;
 
                 case TokenColor.Yellow:
-                    route = CreateRoute(28, 301);
+                    route = CreateRoute(26, 301);
                     break;
 
                 case TokenColor.Green:
-                    route = CreateRoute(14, 201);
+                    route = CreateRoute(13, 201);
                     break;
 
                 case TokenColor.Red:
@@ -104,7 +104,7 @@ namespace Ludo.API.Logic
         public static List<Square> CreateSquares()
         {
             var squares = new List<Square>();
-            for (int i = 0; i <= 55; i++)
+            for (int i = 0; i <= 51; i++)
             {
                 squares.Add(new Square { Id = i });
             }
