@@ -106,17 +106,22 @@ async function UpdateBoard() {
     {
         for (var j = 0; j < board.players[i].tokens.length; j++) {
             var token = board.players[i].tokens[j];
-            var id = token.squareID;
             var color = token.color;
+            var colorTokenClass = colors[color] + '-token';
             if (token.isActive) {
-                var colorTokenClass = colors[color] + '-token';
-                document.getElementById(id).classList.add(colorTokenClass);
+                var id = token.squareID;
+                if (document.getElementById(id).classList.contains(colorTokenClass)) {
+                    colorTokenClass = colors[color] + '-block';
+                    document.getElementById(id).classList.add(colorTokenClass);
+                }
+                else {
+                    document.getElementById(id).classList.add(colorTokenClass);
+                }
             }
-            // TODO:
-            // isActive== false .....
-            // block
-            // color cells
-            // start cells
+            else {
+                var id = colors[color] + j;
+                document.getElementById(id).classList.add(colorTokenClass);
+            } 
         }
     }
 }
