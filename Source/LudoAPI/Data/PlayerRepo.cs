@@ -78,6 +78,14 @@ namespace Ludo.API.Data
             await _context.SaveChangesAsync();
             return Task.CompletedTask;
         }
+
+        //public async Task<Task> MovePlayer(string gameName, string playerName, int diceNumber)
+        //{
+        //    // TODO Make a way to select the correct token before this 
+        //    //Board board = await _context.Board.Where(n => n.BoardName == gameName).Include(p => p.Players).FirstAsync();
+        //    //var playerToMove = board.Players.First(p => p.Name == playerName);
+        //    //playerToMove.
+        //}
         private static bool HasThisColor(TokenColor color, List<Player> players)
         {
             foreach (Player p in players)
@@ -90,5 +98,6 @@ namespace Ludo.API.Data
             }
             return false;
         }
+        
     }
 }

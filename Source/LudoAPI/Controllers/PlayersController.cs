@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Ludo.API.Controllers
@@ -49,6 +50,13 @@ namespace Ludo.API.Controllers
             return Ok(name);
         }
 
+        [HttpPut("dice/{gameName}")]
+        public async Task<IActionResult> RollDice(string gameName, [FromBody]string player, [FromQuery]int diceNumber)
+        {
+            // Todo Add database call, need also to pass correct token somehow.
+            var returnValue = JsonSerializer.Serialize($"Simulate {player} rolling {diceNumber} and updating game.");
+            return Ok (returnValue);
 
+        }
     }
 }
