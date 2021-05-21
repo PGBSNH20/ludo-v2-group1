@@ -31,7 +31,7 @@ namespace Ludo.API.Data
 
                 //Validate player name
                 string sameNameInDB = players.Select(p => p.Name).FirstOrDefault(name => name.ToLower() == playerName.ToLower());
-                if (String.IsNullOrEmpty(playerName)|| !String.IsNullOrEmpty(sameNameInDB)|| String.IsNullOrWhiteSpace(playerName))
+                if (string.IsNullOrEmpty(playerName)|| !string.IsNullOrEmpty(sameNameInDB)|| string.IsNullOrWhiteSpace(playerName))
                     return Task.FromException(new ArgumentException("Choose a different name"));
                
                 // Validate tokens color
@@ -41,6 +41,12 @@ namespace Ludo.API.Data
                 var player = new Player();
                 player.Name = playerName;
                 player.Tokens = Logic.GameFactory.CreateTokens(selectedColor);
+                foreach (Token t in player.Tokens)
+                {
+                    t.Route = Logic.GameFactory.GetRoute(selectedColor);
+                    t.SquareID = t.Route[t.Steps];
+                }
+
                 board.Players.Add(player);
                 board.PlayerTurnName = player.Name;
                 await _context.SaveChangesAsync();
