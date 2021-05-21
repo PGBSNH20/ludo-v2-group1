@@ -5,6 +5,7 @@ var groupName = document.getElementById("groupName").innerHTML; // Set the group
 var playerTurn = null;
 var playerList = null;
 var playerTurnId = 0;
+var diceRoll = 0;
 
 var colors = ["b", "y", "r", "g"];
 
@@ -24,9 +25,8 @@ connection.on("GetPlayerTurn", function(playerName) {
     var user = document.getElementById("selectedPlayer").innerHTML;
 
     document.getElementById("sendButton").disabled = true;
-    var n = playerName.localeCompare(user);
-    console.log(n);
-    if(n == 0)
+    var isPlayerTurn = playerName.localeCompare(user);
+    if(isPlayerTurn == 0)
         document.getElementById("sendButton").disabled = false;
 });
 
@@ -92,7 +92,31 @@ document.getElementById("sendButton").addEventListener("click", async  function 
 async function getDice() {
     var msg = await fetch('https://localhost/api/dice');
     var data = await msg.json();
+    diceRoll = data;
+    var user = document.getElementById("selectedPlayer").innerHTML;
+    sendDice(user, diceRoll);
     return data;
+}
+
+async function sendDice(playerName, dice) {
+
+    //PUT request with body equal on data in JSON format
+    fetch('https://localhost/api/players/dice/' + groupName + '?diceNumber=' + dice, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(playerName)
+        })
+        .then((response) => response.json())
+//Then with the data from the response in JSON...
+        .then((data) => {
+            console.log('Success:', data);
+        })
+//Then with the error genereted...
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }
 
 window.onload = UpdateBoard();
