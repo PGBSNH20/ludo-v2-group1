@@ -6,6 +6,8 @@ var playerTurn = null;
 var playerList = null;
 var playerTurnId = 0;
 var diceRoll = 0;
+var oldTokens = []; // array with squareID where tokens are placed
+var board;
 
 var colors = ["b", "y", "r", "g"];
 
@@ -18,6 +20,7 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
+    UpdateBoard();
 });
 
 connection.on("GetPlayerTurn", function(playerName) {
@@ -56,11 +59,6 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
     } else {
         x.style.display = "none";
     }
-    
-    //var user = document.getElementById("userInput").value;
-    //if(user == playerTurn)
-    //    document.getElementById("sendButton").disabled = false;
-
     connection.invoke("PlayerTurn", groupName).catch(function(err) {
         return console.error(err.toString());
     });
@@ -122,10 +120,20 @@ async function sendDice(playerName, dice) {
 window.onload = UpdateBoard();
 
 async function UpdateBoard() {
+    // remove all tokens from the board if they are there
+    if (oldTokens.length != 0) {
+        for (var i = 0; i < oldTokens.length; i++) {
+            document.getElementById(oldTokens[i]).classList.remove("b-token", "g-token", "r-token", "y-token",
+                                                                    "b-block", "g-block", "r-block", "y-block");
+        }
+        oldTokens = []; 
+    }
+    // get informations from API about position of tokens 
     var boardAnswer = await fetch('https://localhost/api/Game/' + groupName);
-    var board = await boardAnswer.json();
+    board = await boardAnswer.json();
+    var id;
 
-    console.log(board);
+    // place tokens on the board
     for (var i = 0; i < board.players.length; i++)
     {
         for (var j = 0; j < board.players[i].tokens.length; j++) {
@@ -133,7 +141,7 @@ async function UpdateBoard() {
             var color = token.color;
             var colorTokenClass = colors[color] + '-token';
             if (token.isActive) {
-                var id = token.squareID;
+                id = token.squareID;
                 if (document.getElementById(id).classList.contains(colorTokenClass)) {
                     colorTokenClass = colors[color] + '-block';
                     document.getElementById(id).classList.add(colorTokenClass);
@@ -143,9 +151,10 @@ async function UpdateBoard() {
                 }
             }
             else {
-                var id = colors[color] + j;
+                id = colors[color] + j;
                 document.getElementById(id).classList.add(colorTokenClass);
             } 
+            oldTokens.push(id); // save squareIDs where tokens are placed
         }
     }
 }
