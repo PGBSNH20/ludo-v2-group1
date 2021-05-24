@@ -12,6 +12,6 @@ namespace Ludo.API.Data
         Task<List<Player>> GetPlayers(string gameName);
         Task<string> GetPlayerTurn(string gameName);
         Task<Task> AddPlayerTurnName(string gameName, string playerName);
-        Task<Task> MovePlayer(string gameName, string playerName, int diceNumber);
+        Task<string> MovePlayer(string gameName, string playerName, int diceNumber);
     }
 }

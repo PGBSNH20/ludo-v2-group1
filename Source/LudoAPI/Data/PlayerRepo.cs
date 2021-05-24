@@ -1,10 +1,11 @@
-﻿using LudoAPI;
-using LudoAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludo.API.Logic;
+using LudoAPI;
+using LudoAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ludo.API.Data
 {
@@ -40,10 +41,10 @@ namespace Ludo.API.Data
 
                 var player = new Player();
                 player.Name = playerName;
-                player.Tokens = Logic.GameFactory.CreateTokens(selectedColor);
+                player.Tokens = GameFactory.CreateTokens(selectedColor);
                 foreach (Token t in player.Tokens)
                 {
-                    t.Route = Logic.GameFactory.GetRoute(selectedColor);
+                    t.Route = GameFactory.GetRoute(selectedColor);
                     t.SquareID = t.Route[t.Steps];
                 }
 
@@ -79,18 +80,30 @@ namespace Ludo.API.Data
             return Task.CompletedTask;
         }
 
-        public async Task<Task> MovePlayer(string gameName, string playerName, int diceNumber)
+        public async Task<string> MovePlayer(string gameName, string playerName, int diceNumber)
         {
             Board board = await _context.Board.Include(b => b.Players).ThenInclude(p => p.Tokens).Where(b => b.BoardName == gameName).FirstAsync();
-            var playerToMove = board.Players.First(p => p.Name == playerName).Tokens;
-            playerToMove[0].Steps += diceNumber;
-
-            if (diceNumber + playerToMove[0].SquareID > 51)
-                playerToMove[0].SquareID = 0;
-            playerToMove[0].SquareID += diceNumber;
+            var playerToMove = board.Players.First(p => p.Name == playerName);
+            var result = Movement.Move(board, playerToMove, diceNumber);
             await _context.SaveChangesAsync();
-            return Task.CompletedTask;
+            //playerToMove[0].Steps += diceNumber;
+
+            //if (diceNumber + playerToMove[0].SquareID > 51)
+            //    playerToMove[0].SquareID = 0;
+            //playerToMove[0].SquareID += diceNumber;
+
+            if (result.Contains("You made a move!") || result == "Token at the finish!")
+                return result;
+            if (result == "Win!")
+                return $"{playerName} won";
+
+            return "bnag";
         }
+
+
+
+
+
         private static bool HasThisColor(TokenColor color, List<Player> players)
         {
             foreach (Player p in players)
