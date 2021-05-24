@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludo.API.Models;
 using LudoAPI.Models;
 
 namespace Ludo.API.Logic
 {
     public class GameFactory
     {
-        private static List<Token> CreateTokens(TokenColor color, Player player) // Create 4 tokens and routes, and make the first token in the list active.
+        public static List<Token> CreateTokens(TokenColor color, Player player) // Create 4 tokens and routes, and make the first token in the list active.
         {
-            int[] route = GetRoute(color);
             var tempList = new List<Token>();
             for (int i = 0; i < 4; i++) // Add tokens, first one is set to be active, rest is inactive.
             {
-                tempList.Add(i == 0 ? new Token { Color = color, IsActive = true, PlayerId = player.Id, Route = route }
-                : new Token { Color = color, PlayerId = player.Id, Route = route });
+                tempList.Add(i == 0 ? new Token { Color = color, IsActive = true, PlayerId = player.Id, Route = GetRoute(color) }
+                : new Token { Color = color, PlayerId = player.Id, Route = GetRoute(color) });
             }
             return tempList;
         }
@@ -52,33 +52,37 @@ namespace Ludo.API.Logic
             return player;
         }
 
-        public static int[] CreateRoute(int delta, int startColor) // Create array with squareIDs that token needs to pass through. Delta and startColor depends on tokens color.
+        public static Route[] CreateRoute(int delta, int startColor) // Create array with squareIDs that token needs to pass through. Delta and startColor depends on tokens color.
         {
-            int[] route = new int[57];
+            Route[] route = new Route[57];
+            for (int i = 0; i < route.Length; i++)
+            {
+                route[i] = new Route();
+            }
             for (int i = 0; i < 51; i++)
             {
                 int index = i + delta;
                 if (index <= 51)
                 {
-                    route[i] = index;
+                    route[i].Index = index;
                 }
                 else
                 {
-                    route[i] = index - 52;
+                    route[i].Index = index - 52;
                 }
             }
             for (int i = 51; i < 57; i++)
             {
-                route[i] = startColor;
+                route[i].Index = startColor;
                 startColor++;
             }
 
             return route;
         }
 
-        public static int[] GetRoute(TokenColor color)
+        public static List<Route> GetRoute(TokenColor color)
         {
-            int[] route = new int[57];
+            Route[] route = new Route[57];
 
             switch (color) // Set the route depending on token color
             {
@@ -98,7 +102,8 @@ namespace Ludo.API.Logic
                     route = CreateRoute(0, 101);
                     break;
             }
-            return route;
+
+            return route.ToList();
         }
 
         public static List<Square> CreateSquares()
@@ -120,14 +125,14 @@ namespace Ludo.API.Logic
             }
             return squares;
         }
-        public static List<Token> CreateTokens(TokenColor color) // Create 4 tokense and first token in the list active.
-        {
-            var tempList = new List<Token>();
-            for (int i = 0; i < 4; i++) // Add tokens, first one is set to be active, rest is inactive.
-            {
-                tempList.Add(i == 0 ? new Token { Color = color, IsActive = true } : new Token { Color = color });
-            }
-            return tempList;
-        }
+        //public static List<Token> CreateTokens(TokenColor color) // Create 4 tokense and first token in the list active.
+        //{
+        //    var tempList = new List<Token>();
+        //    for (int i = 0; i < 4; i++) // Add tokens, first one is set to be active, rest is inactive.
+        //    {
+        //        tempList.Add(i == 0 ? new Token { Color = color, IsActive = true } : new Token { Color = color });
+        //    }
+        //    return tempList;
+        //}
     }
 }

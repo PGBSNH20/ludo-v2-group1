@@ -21,7 +21,7 @@ namespace Ludo.API.Logic
 
                 var startSquareForThisToken =
                     board.Squares.First(s =>
-                        s.Id == player.Tokens[0].Route[0]); // A square from which the token starts moving on the board
+                        s.Id == player.Tokens[0].Route[0].Index); // A square from which the token starts moving on the board
                 int numberOfOccupants =
                     startSquareForThisToken.Occupants
                         .Count; // Number of tokens that are already on the start square for this token
@@ -41,10 +41,10 @@ namespace Ludo.API.Logic
 
             if (isShortRouteBlocked) return "Route is blocked!";
 
-            var currentSquare = board.Squares.Single(s => s.Id == player.Tokens[0].Route[player.Tokens[0].Steps]);
-            if (player.Tokens[0].Steps + dice >= player.Tokens[0].Route.Length - 1)
+            var currentSquare = board.Squares.Single(s => s.Id == player.Tokens[0].Route[player.Tokens[0].Steps].Index);
+            if (player.Tokens[0].Steps + dice >= player.Tokens[0].Route.Count - 1)
             {
-                if (player.Tokens[0].Steps + dice == player.Tokens[0].Route.Length - 1)
+                if (player.Tokens[0].Steps + dice == player.Tokens[0].Route.Count - 1)
                 {
                     currentSquare.Occupants.Remove(player.Tokens[0]);
                     player.Tokens.Remove(player.Tokens[0]);
@@ -53,7 +53,7 @@ namespace Ludo.API.Logic
 
                 return "Token moves to the home triangle only with an exact roll.";
             }
-            var nextSquare = board.Squares.Single(s => s.Id == player.Tokens[0].Route[player.Tokens[0].Steps + dice]);
+            var nextSquare = board.Squares.Single(s => s.Id == player.Tokens[0].Route[player.Tokens[0].Steps + dice].Index);
 
             if (nextSquare.Occupants.Count == 1 && nextSquare.Occupants[0].Color != player.Tokens[0].Color) // If one opponents token is on the square where the token lands - push the opponents token to its base
             {
@@ -77,9 +77,9 @@ namespace Ludo.API.Logic
         {
             var shortRoute = new List<Square>();
             int i = 1;
-            while (player.Tokens[0].Steps + i < player.Tokens[0].Route.Length && i <= dice) // Condition ((Steps + i) < Route.Length) needs if token is near finish.
+            while (player.Tokens[0].Steps + i < player.Tokens[0].Route.Count && i <= dice) // Condition ((Steps + i) < Route.Length) needs if token is near finish.
             {
-                int squareID = player.Tokens[0].Route[player.Tokens[0].Steps + i];
+                int squareID = player.Tokens[0].Route[player.Tokens[0].Steps + i].Index;
                 Square s = board.Squares.Single(el => el.Id == squareID);
                 shortRoute.Add(s);
                 i++;

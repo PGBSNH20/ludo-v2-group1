@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludo.API.Models;
 
 namespace LudoAPI
 {
@@ -15,9 +16,10 @@ namespace LudoAPI
         public DbSet<Board> Board { get; set; }
         public DbSet<Player> Player { get; set; }
         public DbSet<Token> Token { get; set; }
+        public DbSet<Route> Route { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder) // for tests
         {
-            
+
         }
     }
 }

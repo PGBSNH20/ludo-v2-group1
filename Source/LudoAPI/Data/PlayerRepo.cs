@@ -41,13 +41,17 @@ namespace Ludo.API.Data
 
                 var player = new Player();
                 player.Name = playerName;
-                player.Tokens = GameFactory.CreateTokens(selectedColor);
+                player.Tokens = GameFactory.CreateTokens(selectedColor, player);
                 foreach (Token t in player.Tokens)
                 {
                     t.Route = GameFactory.GetRoute(selectedColor);
-                    t.SquareID = t.Route[t.Steps];
+                    t.SquareID = t.Route[t.Steps].Index;
+                    foreach (var r in t.Route)
+                    {
+                        await _context.Route.AddAsync(r);
+                    }
                 }
-
+                
                 board.Players.Add(player);
                 board.PlayerTurnName = player.Name;
                 await _context.SaveChangesAsync();
