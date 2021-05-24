@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 var groupName = document.getElementById("groupName").innerHTML; // Set the group name by getting the name of the board.

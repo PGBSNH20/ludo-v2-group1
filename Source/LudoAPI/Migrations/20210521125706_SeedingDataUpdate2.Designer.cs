@@ -3,14 +3,16 @@ using LudoAPI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LudoAPI.Migrations
 {
     [DbContext(typeof(LudoContext))]
-    partial class LudoContextModelSnapshot : ModelSnapshot
+    [Migration("20210521125706_SeedingDataUpdate2")]
+    partial class SeedingDataUpdate2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,9 +111,6 @@ namespace LudoAPI.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("OldSquareId")
-                        .HasColumnType("int");
-
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
 
@@ -133,7 +132,6 @@ namespace LudoAPI.Migrations
                             Id = 1,
                             Color = 2,
                             IsActive = true,
-                            OldSquareId = 0,
                             PlayerId = 1,
                             SquareID = 1,
                             Steps = 1
@@ -143,7 +141,6 @@ namespace LudoAPI.Migrations
                             Id = 2,
                             Color = 2,
                             IsActive = true,
-                            OldSquareId = 0,
                             PlayerId = 1,
                             SquareID = 1,
                             Steps = 1
@@ -189,7 +186,6 @@ namespace LudoAPI.Migrations
                             Id = 7,
                             Color = 0,
                             IsActive = false,
-                            OldSquareId = 0,
                             PlayerId = 2,
                             SquareID = 0,
                             Steps = 0
@@ -198,10 +194,7 @@ namespace LudoAPI.Migrations
                         {
                             Id = 8,
                             Color = 0,
-
-                            IsActive = true,
-                            OldSquareId = 0,
-                        
+                            IsActive = false,
                             PlayerId = 2,
                             SquareID = 0,
                             Steps = 0

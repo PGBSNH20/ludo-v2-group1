@@ -5,30 +5,32 @@
 <link rel="stylesheet" href="~/css/ludo.css" />
 
 <h2 id="groupName">@Model.Board.BoardName</h2>
-<h3>Id: @Model.Board.Id</h3>
 <h4 id="playerTurn"></h4>
 
 <div class="container">
     <div>&nbsp;</div>
-    <div id="userInputRow"> 
+    <div id="userInputRow">
         <div>Choose a player:</div>
         <div>
             @for (int i = 0; i < Model.Board.Players.Count; i++)
             {
-                <input type="radio" name ="user" id=@String.Concat("user",i) value=@Model.Board.Players[i].Name />
+                <input type="radio" name="user" id=@String.Concat("user",i) value=@Model.Board.Players[i].Name />
                 <label for=@String.Concat("user",i)>@Model.Board.Players[i].Name - @Model.Board.Players[i].Tokens[0].Color</label><br>
             }
         </div>
         <div class="col-4"><input type="submit" id="userSubmit" value="Connect to game" class="btn btn-primary" /></div>
     </div>
-    
-    <h4 id="selectedPlayer" style = "display: none"></h4>
+
+    <h4 id="selectedPlayer" style="display: none"></h4>
     <div class="row">&nbsp;</div>
     <div class="row">
         <div class="col-6">
             <input type="button" id="sendButton" value="Roll Dice" class="btn btn-warning" />
         </div>
     </div>
+    <h4 id="dice" style="display: none"></h4>
+    <h4 id="selected square">Choose a token</h4>
+    <input type="submit" id="moveButton" value="Move token" style="display: none" class="btn btn-warning">
 </div>
 <div class="row">
     <div class="col-12">
@@ -39,43 +41,43 @@
 <div class="game">
     <div class="house blue">
         <div class="box">
-            <div class="square square-one blue"></div>
-            <div class="square square-two blue"></div>
-            <div class="square square-three blue"></div>
-            <div class="square square-four blue"></div>
+            <div class="square square-one blueBorder" id="b0"></div>
+            <div class="square square-two blueBorder" id="b1"></div>
+            <div class="square square-three blueBorder" id="b2"></div>
+            <div class="square square-four blueBorder" id="b3"></div>
         </div>
     </div>
 
     <div class="house red" style="right: 0">
         <div class="box">
-            <div class="square square-one red"></div>
-            <div class="square square-two red"></div>
-            <div class="square square-three red"></div>
-            <div class="square square-four red"></div>
+            <div class="square square-one redBorder" id="r0"></div>
+            <div class="square square-two redBorder" id="r1"></div>
+            <div class="square square-three redBorder" id="r2"></div>
+            <div class="square square-four redBorder" id="r3"></div>
         </div>
     </div>
 
     <div class="house yellow" style="bottom: 0">
         <div class="box">
-            <div class="square square-one yellow"></div>
-            <div class="square square-two yellow"></div>
-            <div class="square square-three yellow"></div>
-            <div class="square square-four yellow"></div>
+            <div class="square square-one yellowBorder" id="y0"></div>
+            <div class="square square-two yellowBorder" id="y1"></div>
+            <div class="square square-three yellowBorder" id="y2"></div>
+            <div class="square square-four yellowBorder" id="y3"></div>
         </div>
     </div>
 
     <div class="house green" style="bottom: 0;right: 0">
         <div class="box">
-            <div class="square square-one green"></div>
-            <div class="square square-two green"></div>
-            <div class="square square-three green"></div>
-            <div class="square square-four green"></div>
+            <div class="square square-one greenBorder" id="g0"></div>
+            <div class="square square-two greenBorder" id="g1"></div>
+            <div class="square square-three greenBorder" id="g2"></div>
+            <div class="square square-four greenBorder" id="g3"></div>
         </div>
     </div>
 
     <div class="home"></div>
     <div class="cells" id="38" style="top: 40%;"></div>
-    <div class="cells" id="39" style="top: 40%;left:6.66%;"></div>
+    <div class="cells b-start" id="39" style="top: 40%;left:6.66%;"></div>
     <div class="cells" id="40" style="top: 40%;left:13.32%;"></div>
     <div class="cells" id="41" style="top: 40%;left:19.98%;"></div>
     <div class="cells" id="42" style="top: 40%;left:26.64%;"></div>
@@ -83,7 +85,7 @@
 
     <div class="cells" id="49" style="top: 0;left:40%;"></div>
     <div class="cells" id="48" style="top: 6.66%;left:40%;"></div>
-    <div class="cells "id="47" style="top: 13.32%;left:40%;"></div>
+    <div class="cells" id="47" style="top: 13.32%;left:40%;"></div>
     <div class="cells" id="46" style="top: 19.98%;left:40%;"></div>
     <div class="cells" id="45" style="top: 26.64%;left:40%;"></div>
     <div class="cells" id="44" style="top: 33.3%;left:40%;"></div>
@@ -96,7 +98,7 @@
     <div class="cells red" id="105" style="top: 33.3%;left:46.66%;"></div>
 
     <div class="cells" id="51" style="top: 0;left:53.32%;"></div>
-    <div class="cells" id="0" style="top: 6.66%;left:53.32%;"></div>
+    <div class="cells r-start" id="0" style="top: 6.66%;left:53.32%;"></div>
     <div class="cells" id="1" style="top: 13.32%;left:53.32%;"></div>
     <div class="cells" id="2" style="top: 19.98%;left:53.32%;"></div>
     <div class="cells" id="3" style="top: 26.64%;left:53.32%;"></div>
@@ -120,7 +122,7 @@
     <div class="cells" id="16" style="top: 53.32%;right:26.64%;"></div>
     <div class="cells" id="15" style="top: 53.32%;right:19.98%;"></div>
     <div class="cells" id="14" style="top: 53.32%;right:13.32%;"></div>
-    <div class="cells" id="13" style="top: 53.32%;right:6.66%;"></div>
+    <div class="cells g-start" id="13" style="top: 53.32%;right:6.66%;"></div>
     <div class="cells" id="12" style="top: 53.32%;right:0;"></div>
 
     <div class="cells" id="23" style="bottom: 0;left:53.32%;"></div>
@@ -138,7 +140,7 @@
     <div class="cells yellow" id="305" style="bottom: 33.3%;left:46.66%;"></div>
 
     <div class="cells" id="25" style="bottom: 0;left:40%;"></div>
-    <div class="cells" id="26" style="bottom: 6.66%;left:40%;"></div>
+    <div class="cells y-start" id="26" style="bottom: 6.66%;left:40%;"></div>
     <div class="cells" id="27" style="bottom: 13.32%;left:40%;"></div>
     <div class="cells" id="28" style="bottom: 19.98%;left:40%;"></div>
     <div class="cells" id="29" style="bottom: 26.64%;left:40%;"></div>
@@ -157,8 +159,8 @@
     <div class="cells blue" id="402" style="top: 46.66%;left:13.32%;"></div>
     <div class="cells blue" id="401" style="top: 46.66%;left:6.66%;"></div>
     <div class="cells" id="37" style="top: 46.66%;left:0;"></div>
-
 </div>
+
 
 <div class="row">
     <div class="col-6">
