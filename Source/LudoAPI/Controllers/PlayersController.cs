@@ -53,9 +53,10 @@ namespace Ludo.API.Controllers
         [HttpPut("dice/{gameName}")]
         public async Task<IActionResult> RollDice(string gameName, [FromBody]string player, [FromQuery]int diceNumber)
         {
-            // Todo Add database call, need also to pass correct token somehow.
-            var returnValue = JsonSerializer.Serialize($"Simulate {player} rolling {diceNumber} and updating game.");
-            return Ok (returnValue);
+            var result = await _playerRepo.MovePlayer(gameName, player, diceNumber);
+            if (result.IsCompleted)
+                return Ok(JsonSerializer.Serialize($"{player} moved {diceNumber} steps"));
+            return BadRequest();
 
         }
     }
