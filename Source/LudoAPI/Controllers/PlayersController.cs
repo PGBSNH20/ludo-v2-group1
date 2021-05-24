@@ -19,12 +19,14 @@ namespace Ludo.API.Controllers
         {
             _playerRepo = playerRepo;
         }
+
         // POST: api/Players/{gameName}
         // Adds a new player to an existing game
         [HttpPost("{gameName}")]
         public async Task<IActionResult> PostPlayer(string gameName, PlayerTokenColor playerTokenColor)
         {
-            var result = await _playerRepo.AddPlayer(playerTokenColor.PlayerName, gameName, playerTokenColor.TokenColor);
+            var result =
+                await _playerRepo.AddPlayer(playerTokenColor.PlayerName, gameName, playerTokenColor.TokenColor);
             if (result.Exception != null)
                 return BadRequest(result.Exception.Message);
             return Ok();
@@ -38,11 +40,12 @@ namespace Ludo.API.Controllers
         }
 
         [HttpPut("turn/{gameName}")]
-        public async Task<IActionResult> AddPlayerTurn(string gameName, [FromBody]string player)
+        public async Task<IActionResult> AddPlayerTurn(string gameName, [FromBody] string player)
         {
             await _playerRepo.AddPlayerTurnName(gameName, player);
             return Ok();
         }
+
         [HttpGet("turn/{gameName}")]
         public async Task<IActionResult> GetPlayerTurn(string gameName, string player)
         {
@@ -51,12 +54,13 @@ namespace Ludo.API.Controllers
         }
 
         [HttpPut("dice/{gameName}")]
-        public async Task<IActionResult> RollDice(string gameName, [FromBody]string player, [FromQuery]int diceNumber)
+        public async Task<IActionResult> RollDice(string gameName, [FromBody] string player, [FromQuery] int diceNumber)
         {
             // Todo Add database call, need also to pass correct token somehow.
-            var returnValue = JsonSerializer.Serialize($"Simulate {player} rolling {diceNumber} and updating game.");
-            return Ok (returnValue);
-
+            var result = await _playerRepo.MovePlayer(gameName, player, diceNumber);
+            if (result.IsCompleted)
+                return Ok(JsonSerializer.Serialize($"{player} moved {diceNumber} steps"));
+            return BadRequest();
         }
     }
 }

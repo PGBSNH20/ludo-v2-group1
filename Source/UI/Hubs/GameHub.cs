@@ -32,5 +32,10 @@ namespace Ludo.Web.Hubs
             await _ludoData.AddPlayerTurn(group, name);
             await Clients.Group(group).SendAsync("GetPlayerTurn", name);
         }
+
+        public async Task UpdateBoard(string group)
+        {
+            await Clients.Group(group).SendAsync("UpdateClientBoard");
+        }
     }
 }

@@ -18,6 +18,7 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
+    UpdateBoard();
 });
 
 connection.on("GetPlayerTurn", function(playerName) {
@@ -131,9 +132,11 @@ async function UpdateBoard() {
         for (var j = 0; j < board.players[i].tokens.length; j++) {
             var token = board.players[i].tokens[j];
             var id = token.squareID;
+            var idToRemove = token.oldSquareId;
             var color = token.color;
             if (token.isActive) {
                 var colorTokenClass = colors[color] + '-token';
+                document.getElementById(idToRemove).classList.remove(colorTokenClass);
                 document.getElementById(id).classList.add(colorTokenClass);
             }
             // TODO:
