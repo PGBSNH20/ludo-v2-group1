@@ -8,6 +8,7 @@ var playerTurnId = 0;
 var diceRoll = 0;
 var oldTokens = []; // array with squareID where tokens are placed
 var board;
+var selectedPlayer = null;
 
 var colors = ["b", "y", "r", "g"];
 
@@ -25,10 +26,9 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
 
 connection.on("GetPlayerTurn", function(playerName) {
     document.getElementById("playerTurn").innerHTML = "Player Turn - " + playerName;
-    var user = document.getElementById("selectedPlayer").innerHTML;
-
     document.getElementById("sendButton").disabled = true;
-    var isPlayerTurn = playerName.localeCompare(user);
+
+    var isPlayerTurn = playerName.localeCompare(selectedPlayer);
     if(isPlayerTurn == 0)
         document.getElementById("sendButton").disabled = false;
 });
@@ -43,14 +43,14 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
         return console.error(err.toString());
     });
     var radios = document.querySelectorAll('input[type="radio"]');
-    var selection;
+
     for (var i = 0; i < radios.length; i++) {
         if (radios[i].checked) {
-            selection=radios[i].value;
+            selectedPlayer=radios[i].value;
         }
     }
-
-    document.getElementById("selectedPlayer").innerHTML = selection;
+    
+    document.getElementById("selectedPlayer").innerHTML = selectedPlayer;
     document.getElementById("selectedPlayer").style.display = 'block';
 
     var x = document.getElementById("userInputRow");
@@ -66,33 +66,34 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
 });
 
 document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
-    var user = document.getElementById("selectedPlayer").innerHTML;
     var s = await getDice();
     var message = s.toString();
-    
-    connection.invoke("AddPlayerTurn", groupName, user).catch(function (err) {
+    document.getElementById("dice").innerHTML = "Dice: "+ message;
+    document.getElementById("dice").style.display = 'block';
+    document.getElementById("selected square").style.display = 'block';
+
+    connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
         return console.error(err.toString());
     });
 
     document.getElementById("sendButton").disabled = true;
-    connection.invoke("SendMessage", groupName, user, message).catch(function (err) {
+    connection.invoke("SendMessage", groupName, selectedPlayer, message).catch(function (err) {
         return console.error(err.toString());
     });
 
     connection.invoke("PlayerTurn", groupName).catch(function(err) {
         return console.error(err.toString());
     });
+    document.getElementsByClassName("game")[0].addEventListener("click", SelectToken);
     
     event.preventDefault();
 });
-
 
 async function getDice() {
     var msg = await fetch('https://localhost/api/dice');
     var data = await msg.json();
     diceRoll = data;
-    var user = document.getElementById("selectedPlayer").innerHTML;
-    sendDice(user, diceRoll);
+    sendDice(selectedPlayer, diceRoll);
     return data;
 }
 
@@ -157,4 +158,38 @@ async function UpdateBoard() {
             oldTokens.push(id); // save squareIDs where tokens are placed
         }
     }
+}
+
+function SelectToken(e) {
+   
+    var selectedSquare = e.target.id;
+    var squaresWithPlayersTokens = GetSquaresWithPlayersTokens();
+    var selectedToken=null;
+    var indexOfSelectedToken = squaresWithPlayersTokens.indexOf(selectedSquare);
+    if (indexOfSelectedToken > -1) {
+        document.getElementById("selected square").innerHTML = "You have chosen a token on the square " + selectedSquare;
+        selectedToken = board.players.find(p => p.name == selectedPlayer).tokens[indexOfSelectedToken];
+        console.log(selectedToken);
+        document.getElementById("moveButton").style = "block";
+    }
+    else {
+        document.getElementById("selected square").innerHTML = "Choose a token";
+    }
+}
+
+function GetSquaresWithPlayersTokens() {
+    var player = board.players.find(p => p.name == selectedPlayer);
+    var tokens = player.tokens;
+    var squares = [];
+    var color = tokens[0].color;
+
+    for (var j = 0; j < tokens.length; j++) {
+        if (tokens[j].isActive) {
+            squares.push(tokens[j].squareID.toString());
+        }
+        else {
+            squares.push(colors[color] + j);
+        }
+    }
+    return squares;
 }
