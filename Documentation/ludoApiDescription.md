@@ -1,8 +1,3 @@
-
-
-## System Description
-Describes classes and objects that will be used in the development phase. Updated regulary to match current state.
-
 ## Ludo API
 ### Models Layer
 #### Board Class
