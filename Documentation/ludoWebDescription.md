@@ -48,4 +48,33 @@ public async Task<IActionResult> OnPostAsync() // After submitting form, create 
             return RedirectToPage("Player", new { gameName = Board.BoardName });
         }
 ```
+- ``Player.cshtml`` - Host adds players by name and color on this page once at least 2 players have been added, with different names and colors. The host can initiate the game. Other players can then join using the link that gets created.
+- ``Player.cshtml.cs`` Runs the following methods on get and post
+```csharp
+ public async Task<ActionResult> OnGetAsync(string gameName) // Get name from url, make API call to find matching board in database.
+        {
+            //Make API call to get board here
+            Board = await _ludoData.GetGameAsync(gameName);
+            if (Board == null)
+                return RedirectToPage("Index");
+            return Page();
+        }
+        public async Task<IActionResult> OnPostAddPlayerAsync(string gameName)
+        {
+            if (!ModelState.IsValid)
+                return Page();
 
+            var response = await _ludoData.PostPlayer(gameName, NameColor);
+            ErrorMessage = response.Content;
+            //Make API call to get board
+            Board = await _ludoData.GetGameAsync(gameName);
+            if (Board == null)
+                return RedirectToPage("Index");
+            
+            return Page();
+        }
+        public ActionResult OnPostStartGame(string gameName)
+        {
+            return RedirectToPage("Game", new {boardName = gameName });
+        }
+```
