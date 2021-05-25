@@ -2,8 +2,8 @@
 
 - I can choose to start a new game or join a game.
 - I can choose the number of players (2-4) when creating a game.
-- I can save the game (when?). 
-
+- I can invite players by giving them the game link after creating the game.
+- I can leave the website and come back to the same game.
 #### As a **user** playing the game
 - I can roll the dice.
 - I can make a move in the game:
