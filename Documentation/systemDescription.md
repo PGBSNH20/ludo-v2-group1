@@ -64,6 +64,7 @@ A dice consisting of numbers between 1 and 6.
 #### Action
 - StartGame() - Method determines whose turn is to make move and calls the method PlayerMakesMove.   
 - PlayerMakesMove() - Allows the player to select a token and make moves. Method calls the method Move from class Token.
+
 ### DataAccess
 #### BoardRepo Class
 - ``GetAllBoards()`` - Returns all boards from database.
@@ -71,7 +72,17 @@ A dice consisting of numbers between 1 and 6.
 - ``UpdateBoard(int id, Board board)`` - Updates board and returns completed task or task from exception.
 - ``AddBoard(Board board)`` - Adds board to database and returns completed task or task from exception.
 - ``Deleteboard(string name)`` - Finds the board and deletes it from the database, returns completed task or task from exception.
-
+#### GameRepo Class
+- ``GetGameByName(string name)`` - Returns the board by name and includes players and tokens, returns a ``board``.
+#### PlayerRepo Class
+- ``AddPlayer(string playerName, string gameName, string color)`` - Goes through pre-checks to make sure that:
+  - The board exists
+  - Player count is not already at max
+  - The name is not taken 
+  - The color has not been taken
+- ``GetPlayers(string gameName)`` - returns a list of all players that are related to the board name.
+- ``GetPlayerTurn(string gameName)`` - returns the name of the player who has the next turn.
+- ``AddPlayerTurnName(string gameName, string playerName)`` - Finds all players related to the board in a list, and selects the person below the included ``playerName`` as the next turn name. Returns task completed or task from exception.
 ### Presentation
 #### Menu Class
 ShowMenu() - allows the user to select one of the suggested options. The code is borrowed from the previous course.
