@@ -65,14 +65,12 @@ A dice consisting of numbers between 1 and 6.
 - StartGame() - Method determines whose turn is to make move and calls the method PlayerMakesMove.   
 - PlayerMakesMove() - Allows the player to select a token and make moves. Method calls the method Move from class Token.
 ### DataAccess
-#### State Class
-The class manages connection between game and database.
-
-- AddBoard(Board board) that saves the game to a database.
-- RemoveBoard(string boardName) that removes the game with name "boardName" from a database. 
-#### GameState
-- LoadSavedGame() - Allows the user to select one of saved games and load it. 
-- SaveGame() - Saves current game to the database. If a game with the same name already exists the user can overwrite it or save under a different name. 
+#### BoardRepo Class
+- ``GetAllBoards()`` - Returns all boards from database.
+- ``GetBoardByName(string name)`` - Returns the specified board from databas.
+- ``UpdateBoard(int id, Board board)`` - Updates board and returns completed task or task from exception.
+- ``AddBoard(Board board)`` - Adds board to database and returns completed task or task from exception.
+- ``Deleteboard(string name)`` - Finds the board and deletes it from the database, returns completed task or task from exception.
 
 ### Presentation
 #### Menu Class
