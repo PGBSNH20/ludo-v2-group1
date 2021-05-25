@@ -56,13 +56,6 @@ Class is used to create the desired objects
 - NewPlayer() - Creates a player and calls the CreateTokens method. Then sets the correct starting position for the active token.   
 - CreateTokens() - Creates a list of tokens of selected color for the player and assigns the correct route depending on the color choice.
 - CreateRoute(TokenColor color) and GetRoute(int delta, int startColor) - Create a route that depends on tokens color.    
-#### NewGame
-- CreateNewGame() - Allows the user to create a new game and starts it (calls metod StartGame). To create a new game the user enters name of the game and number of players. Than this method calls the method AddPlayers to create players.   
-- AddPlayers() - Gets names of all players and colors of tokens from user.
-- AddOnePlayer() - Gets name of one player and color of tokens from user.
-#### Action
-- StartGame() - Method determines whose turn is to make move and calls the method PlayerMakesMove.   
-- PlayerMakesMove() - Allows the player to select a token and make moves. Method calls the method Move from class Token.
 
 ### DataAccess Layer
 #### BoardRepo Class
