@@ -8,12 +8,12 @@ Describes classes and objects that will be used in the development phase. Update
 #### Board Class
 The main class that stores all the information about the game.
 
-- BoardName - string property for name of board.
-- List of Squares stores all the squares. See below.
-- List of Players store all the players. See below.
-- LastMadeMove property of type Player. It is the player who made the last move in the game. 
-- PlayerIDLastMadeMove property of type int. It's ID of the player who made the last move in the game. It is used to determine the order of moves in the game after loading the game from a database.
-- Id property of type int. It is used as PK in the database.
+- ``BoardName`` - string property for name of board.
+- ``List`` of ``Squares`` stores all the squares. See below.
+- ``List`` of ``Players``store all the players. See below.
+- ``LastMadeMove`` property of type ``Player``. It is the player who made the last move in the game. 
+- ``PlayerIDLastMadeMove`` property of type int. It's ID of the player who made the last move in the game. It is used to determine the order of moves in the game after loading the game from a database.
+- ``Id`` property of type int. It is used as PK in the database.
 
 #### Square Class
 Game board consists of 80 squares. Square number (Id) can be determined in the figure:   
