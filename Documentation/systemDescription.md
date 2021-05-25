@@ -3,8 +3,8 @@
 ## System Description
 Describes classes and objects that will be used in the development phase. Updated regulary to match current state.
 
-## GameEngine
-### Models
+## Ludo API
+### Models Layer
 #### Board Class
 The main class that stores all the information about the game.
 
@@ -14,6 +14,7 @@ The main class that stores all the information about the game.
 - ``LastMadeMove`` property of type ``Player``. It is the player who made the last move in the game. 
 - ``PlayerIDLastMadeMove`` property of type int. It's ID of the player who made the last move in the game. It is used to determine the order of moves in the game after loading the game from a database.
 - ``Id`` property of type int. It is used as PK in the database.
+- ``PlayerTurnName`` of type string. Used to determine who has the next turn.
 
 #### Square Class
 Game board consists of 80 squares. Square number (Id) can be determined in the figure:   
@@ -43,6 +44,10 @@ Each player has 4 tokens, if the dice hits a 6, the user can either put a new to
 Using Steps and Route you can determine the squareID on which the token is.
 [<img src="https://github.com/PGBSNH20/ludo-game-team-2/blob/main/Documentation/img/SquaresRoutes.jpg">](https://github.com/PGBSNH20/ludo-game-team-2/blob/main/Documentation/img/SquaresRoutes.jpg)
 
+### Logic Layer
+#### Dice Class
+A dice consisting of numbers between 1 and 6.
+- RollDice() - Method that generates a random number between 1 and 6
 #### GameFactory Class
 Class is used to create the desired objects
 
@@ -51,12 +56,6 @@ Class is used to create the desired objects
 - NewPlayer() - Creates a player and calls the CreateTokens method. Then sets the correct starting position for the active token.   
 - CreateTokens() - Creates a list of tokens of selected color for the player and assigns the correct route depending on the color choice.
 - CreateRoute(TokenColor color) and GetRoute(int delta, int startColor) - Create a route that depends on tokens color.    
-
-### GameLogic
-#### Dice Class
-A dice consisting of numbers between 1 and 6.
-
-- RollDice() - Method that generates a random number between 1 and 6
 #### NewGame
 - CreateNewGame() - Allows the user to create a new game and starts it (calls metod StartGame). To create a new game the user enters name of the game and number of players. Than this method calls the method AddPlayers to create players.   
 - AddPlayers() - Gets names of all players and colors of tokens from user.
@@ -65,7 +64,7 @@ A dice consisting of numbers between 1 and 6.
 - StartGame() - Method determines whose turn is to make move and calls the method PlayerMakesMove.   
 - PlayerMakesMove() - Allows the player to select a token and make moves. Method calls the method Move from class Token.
 
-### DataAccess
+### DataAccess Layer
 #### BoardRepo Class
 - ``GetAllBoards()`` - Returns all boards from database.
 - ``GetBoardByName(string name)`` - Returns the specified board from databas.
@@ -84,6 +83,11 @@ A dice consisting of numbers between 1 and 6.
 - ``GetPlayerTurn(string gameName)`` - returns the name of the player who has the next turn.
 - ``AddPlayerTurnName(string gameName, string playerName)`` - Finds all players related to the board in a list, and selects the person below the included ``playerName`` as the next turn name. Returns task completed or task from exception.
 - ``MovePlayer(string gameName, string playerName, int diceNumber)`` - Todo
+
+
+
+
+
 ### Presentation
 #### Menu Class
 ShowMenu() - allows the user to select one of the suggested options. The code is borrowed from the previous course.
