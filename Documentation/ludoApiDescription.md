@@ -77,17 +77,3 @@ Class is used to create the desired objects
 - ``AddPlayerTurnName(string gameName, string playerName)`` - Finds all players related to the board in a list, and selects the person below the included ``playerName`` as the next turn name. Returns task completed or task from exception.
 - ``MovePlayer(string gameName, string playerName, int diceNumber)`` - Todo
 
-
-
-
-
-### Presentation
-#### Menu Class
-ShowMenu() - allows the user to select one of the suggested options. The code is borrowed from the previous course.
-#### Graphics
-Draw() - displays a 2D model of the game board on the console, allows to track the position of tokens.     
-## UI
-Contains Program.cs
-
-## LudoTests
-Contains our unit tests and our in memory database (SQLite)
