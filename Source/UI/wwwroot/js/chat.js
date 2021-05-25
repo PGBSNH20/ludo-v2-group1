@@ -2,18 +2,18 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 var groupName = document.getElementById("groupName").innerHTML; // Set the group name by getting the name of the board.
-var playerTurn = null;
-var playerList = null;
-var playerTurnId = 0;
+//var playerTurn = null;
+//var playerList = null;
+//var playerTurnId = 0;
 var diceRoll = 0;
 var oldTokens = []; // array with squareID where tokens are placed
 var board;
 var selectedPlayer = null;
-
+var selectedToken = null;
 var colors = ["b", "y", "r", "g"];
 
-//Disable send button until connection is established
-document.getElementById("sendButton").disabled = true; 
+//Disable rollDice button until connection is established
+document.getElementById("rollDiceButton").disabled = true; 
 
 connection.on("ReceiveMessage", function (user, message) { // A connection on SingalR method SendMessage returns a string in the message list html
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -26,11 +26,15 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
 
 connection.on("GetPlayerTurn", function(playerName) {
     document.getElementById("playerTurn").innerHTML = "Player Turn - " + playerName;
-    document.getElementById("sendButton").disabled = true;
+    document.getElementById("rollDiceButton").disabled = true;
 
     var isPlayerTurn = playerName.localeCompare(selectedPlayer);
-    if(isPlayerTurn == 0)
-        document.getElementById("sendButton").disabled = false;
+    if (isPlayerTurn == 0) {
+        document.getElementById("prompt").style.display = 'block';
+        document.getElementById("prompt").innerHTML = "Roll the dice";
+        document.getElementById("rollDiceButton").style.display = 'block';
+        document.getElementById("rollDiceButton").disabled = false;
+    }
 });
 
 connection.start().then(function () { // Start connection and enable dice button
@@ -65,27 +69,16 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
 
 });
 
-document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
+document.getElementById("rollDiceButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
     var s = await getDice();
-    var message = s.toString();
-    document.getElementById("dice").innerHTML = "Dice: "+ message;
+    document.getElementById("dice").innerHTML = "Dice: " + s.toString();
     document.getElementById("dice").style.display = 'block';
-    document.getElementById("selected square").style.display = 'block';
-
-    connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
-        return console.error(err.toString());
-    });
-
-    document.getElementById("sendButton").disabled = true;
-    connection.invoke("SendMessage", groupName, selectedPlayer, message).catch(function (err) {
-        return console.error(err.toString());
-    });
-
-    connection.invoke("PlayerTurn", groupName).catch(function(err) {
-        return console.error(err.toString());
-    });
+    document.getElementById("prompt").innerHTML = "Choose a token";
+    document.getElementById("rollDiceButton").disabled = true;
+    document.getElementById("moveButton").disabled = true;
+    document.getElementById("moveButton").style.display = 'block';
     document.getElementsByClassName("game")[0].addEventListener("click", SelectToken);
-    
+
     event.preventDefault();
 });
 
@@ -93,29 +86,25 @@ async function getDice() {
     var msg = await fetch('https://localhost/api/dice');
     var data = await msg.json();
     diceRoll = data;
-    sendDice(selectedPlayer, diceRoll);
     return data;
 }
 
-async function sendDice(playerName, dice) {
-
-    //PUT request with body equal on data in JSON format
-    fetch('https://localhost/api/players/dice/' + groupName + '?diceNumber=' + dice, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(playerName)
-        })
-        .then((response) => response.json())
-//Then with the data from the response in JSON...
-        .then((data) => {
-            console.log('Success:', data);
-        })
-//Then with the error genereted...
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+function sendDice(dice, tokenID) {
+    console.log("dice:" + dice + "  tokenID:" + tokenID);
+    return "placeholder"; 
+//    //PUT request with body equal on data in JSON format
+//    fetch('https://localhost/api/players/dice/'+tokenID+'?diceNumber='+dice, {
+//            method: 'PUT'
+//        })
+//        .then((response) => response.json())
+////Then with the data from the response in JSON...
+//        .then((data) => {
+//            console.log('Success:', data);
+//        })
+////Then with the error genereted...
+//        .catch((error) => {
+//            console.error('Error:', error);
+//        });
 }
 
 window.onload = UpdateBoard();
@@ -164,16 +153,16 @@ function SelectToken(e) {
    
     var selectedSquare = e.target.id;
     var squaresWithPlayersTokens = GetSquaresWithPlayersTokens();
-    var selectedToken=null;
+   
     var indexOfSelectedToken = squaresWithPlayersTokens.indexOf(selectedSquare);
     if (indexOfSelectedToken > -1) {
-        document.getElementById("selected square").innerHTML = "You have chosen a token on the square " + selectedSquare;
+        document.getElementById("prompt").innerHTML = "You have chosen a token on the square " + selectedSquare;
         selectedToken = board.players.find(p => p.name == selectedPlayer).tokens[indexOfSelectedToken];
-        console.log(selectedToken);
-        document.getElementById("moveButton").style = "block";
+        document.getElementById("moveButton").disabled = false;
     }
     else {
-        document.getElementById("selected square").innerHTML = "Choose a token";
+        document.getElementById("prompt").innerHTML = "Choose a token";
+        document.getElementById("moveButton").disable = true;
     }
 }
 
@@ -193,3 +182,30 @@ function GetSquaresWithPlayersTokens() {
     }
     return squares;
 }
+
+document.getElementById("moveButton").addEventListener("click", async function (event) {
+
+    var result = sendDice(diceRoll, selectedToken.id);
+
+    if (result == "placeholder") {
+        connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
+            return console.error(err.toString());
+        });
+        connection.invoke("SendMessage", groupName, selectedPlayer, diceRoll.toString()).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        connection.invoke("PlayerTurn", groupName).catch(function (err) {
+            return console.error(err.toString());
+        });
+        document.getElementById("moveButton").style.display = 'none';
+        document.getElementById("prompt").style.display = 'none';
+        document.getElementById("rollDiceButton").style.display = 'none';
+        document.getElementById("dice").style.display = 'none';
+       // event.preventDefault();
+    }
+    else {
+        document.getElementById("prompt").innerHTML = result + " Choose another token";
+    }
+    document.getElementById("moveButton").disabled = true;
+});
