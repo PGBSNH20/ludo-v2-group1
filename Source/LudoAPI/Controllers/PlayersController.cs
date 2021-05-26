@@ -51,11 +51,13 @@ namespace Ludo.API.Controllers
             return Ok(name);
         }
 
-        [HttpPut("dice/{gameName}")]
-        public async Task<IActionResult> RollDice(string gameName, [FromBody]string player, [FromQuery]int diceNumber)
+        [HttpPut("dice/{diceNumber}")]
+        public async Task<IActionResult> RollDice(int diceNumber, int tokenID)
         {
+
             var result = await _playerRepo.MovePlayer(gameName, player, diceNumber);
             return Ok(JsonSerializer.Serialize($"{player} : {result}"));
+
         }
     }
 }

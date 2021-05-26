@@ -171,3 +171,6 @@
 .y-start {
     border: 4px solid #fff176;
 }
+.selectionToken {
+    box-shadow: inset 0 0 12px;
+}

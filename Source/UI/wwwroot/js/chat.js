@@ -2,22 +2,18 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 var groupName = document.getElementById("groupName").innerHTML; // Set the group name by getting the name of the board.
-var playerTurn = null;
-var playerList = null;
-var playerTurnId = 0;
-var diceRoll = 0;
+var diceRoll = null;
 var oldTokens = []; // array with squareID where tokens are placed
 var board;
 var selectedPlayer = null;
-
+var selectedToken = null;
+var markedCellId = null;
 var colors = ["b", "y", "r", "g"];
 
-//Disable send button until connection is established
-document.getElementById("sendButton").disabled = true; 
-
+window.onload = UpdateBoard();
 connection.on("ReceiveMessage", function (user, message) { // A connection on SingalR method SendMessage returns a string in the message list html
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = user + " rolls " + msg;
+    var encodedMsg = user + msg;
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
@@ -25,15 +21,22 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
 });
 
 connection.on("GetPlayerTurn", function(playerName) {
-    document.getElementById("playerTurn").innerHTML = "Player Turn - " + playerName;
-    document.getElementById("sendButton").disabled = true;
-
     var isPlayerTurn = playerName.localeCompare(selectedPlayer);
-    if(isPlayerTurn == 0)
-        document.getElementById("sendButton").disabled = false;
+    if (isPlayerTurn == 0) {
+        document.getElementById("dice").innerHTML = "";
+        document.getElementById("prompt").innerHTML = "Roll the dice";
+        document.getElementsByClassName("gameProgressInfo")[0].style.display = 'block';
+        document.getElementById("rollDiceButton").disabled = false;
+        document.getElementById("moveButton").disabled = true;
+        document.getElementById("passMoveButton").disabled = true;
+    }
+    else {
+        document.getElementsByClassName("gameProgressInfo")[0].style.display = 'none';
+        document.getElementById("prompt").innerHTML = "Player Turn - " + playerName;
+    }
 });
 
-connection.start().then(function () { // Start connection and enable dice button
+connection.start().then(function () { // Start connection
 }).catch(function (err) {
     return console.error(err.toString());
 });
@@ -49,76 +52,48 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
             selectedPlayer=radios[i].value;
         }
     }
-    
-    document.getElementById("selectedPlayer").innerHTML = selectedPlayer;
-    document.getElementById("selectedPlayer").style.display = 'block';
-
-    var x = document.getElementById("userInputRow");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
+    document.getElementById("selectedPlayer").innerHTML = "Player - " + selectedPlayer;
+    document.getElementById("userInputRow").style.display = 'none';
     connection.invoke("PlayerTurn", groupName).catch(function(err) {
         return console.error(err.toString());
     });
-
 });
 
-document.getElementById("sendButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
-    var s = await getDice();
-    var message = s.toString();
-    document.getElementById("dice").innerHTML = "Dice: "+ message;
-    document.getElementById("dice").style.display = 'block';
-    document.getElementById("selected square").style.display = 'block';
-
-    connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
-        return console.error(err.toString());
-    });
-
-    document.getElementById("sendButton").disabled = true;
-    connection.invoke("SendMessage", groupName, selectedPlayer, message).catch(function (err) {
-        return console.error(err.toString());
-    });
-
-    connection.invoke("PlayerTurn", groupName).catch(function(err) {
-        return console.error(err.toString());
-    });
+document.getElementById("rollDiceButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
+    diceRoll = await getDice();
+    document.getElementById("dice").innerHTML = "Dice: " + diceRoll.toString();
+    document.getElementById("prompt").innerHTML = "Choose a token";
+    document.getElementById("rollDiceButton").disabled = true;
+    document.getElementById("passMoveButton").disabled = false;
     document.getElementsByClassName("game")[0].addEventListener("click", SelectToken);
-    
-    event.preventDefault();
+    connection.invoke("SendMessage", groupName, selectedPlayer, " rolls "+diceRoll.toString()).catch(function (err) {
+        return console.error(err.toString());
+    });
 });
 
 async function getDice() {
     var msg = await fetch('https://localhost/api/dice');
     var data = await msg.json();
-    diceRoll = data;
-    sendDice(selectedPlayer, diceRoll);
     return data;
 }
 
-async function sendDice(playerName, dice) {
-
-    //PUT request with body equal on data in JSON format
-    fetch('https://localhost/api/players/dice/' + groupName + '?diceNumber=' + dice, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(playerName)
-        })
-        .then((response) => response.json())
-//Then with the data from the response in JSON...
-        .then((data) => {
-            console.log('Success:', data);
-        })
-//Then with the error genereted...
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+function sendDice(dice, tokenID) {
+//    //PUT request with body equal on data in JSON format
+//    fetch('https://localhost/api/players/dice/'+tokenID+'?diceNumber='+dice, {
+//            method: 'PUT'
+//        })
+//        .then((response) => response.json())
+////Then with the data from the response in JSON...
+//        .then((data) => {
+//            console.log('Success:', data);
+//        })
+////Then with the error genereted...
+//        .catch((error) => {
+//            console.error('Error:', error);
+//        });
+    return "placeholder"; 
 }
 
-window.onload = UpdateBoard();
 
 async function UpdateBoard() {
     // remove all tokens from the board if they are there
@@ -128,6 +103,9 @@ async function UpdateBoard() {
                                                                     "b-block", "g-block", "r-block", "y-block");
         }
         oldTokens = []; 
+    }
+    if (markedCellId != null) {
+        document.getElementById(markedCellId).classList.remove("selectionToken");
     }
     // get informations from API about position of tokens 
     var boardAnswer = await fetch('https://localhost/api/Game/' + groupName);
@@ -164,16 +142,29 @@ function SelectToken(e) {
    
     var selectedSquare = e.target.id;
     var squaresWithPlayersTokens = GetSquaresWithPlayersTokens();
-    var selectedToken=null;
+   
     var indexOfSelectedToken = squaresWithPlayersTokens.indexOf(selectedSquare);
     if (indexOfSelectedToken > -1) {
-        document.getElementById("selected square").innerHTML = "You have chosen a token on the square " + selectedSquare;
+        document.getElementById("prompt").innerHTML = "You have chosen a token on the square " + selectedSquare;
         selectedToken = board.players.find(p => p.name == selectedPlayer).tokens[indexOfSelectedToken];
-        console.log(selectedToken);
-        document.getElementById("moveButton").style = "block";
+        document.getElementById("moveButton").disabled = false;
+
+        if (markedCellId != null) {
+            document.getElementById(markedCellId).classList.remove("selectionToken");
+        }
+        markedCellId = selectedSquare;
+        document.getElementById(markedCellId).classList.add("selectionToken");
+
+        document.getElementById(markedCellId).classList.add("selectionToken");
     }
     else {
-        document.getElementById("selected square").innerHTML = "Choose a token";
+        document.getElementById("prompt").innerHTML = "Choose a token";
+        document.getElementById("moveButton").disable = true;
+        if (markedCellId != null) {
+            document.getElementById(markedCellId).classList.remove("selectionToken");
+            markedCellId = null;
+        }
+
     }
 }
 
@@ -193,3 +184,41 @@ function GetSquaresWithPlayersTokens() {
     }
     return squares;
 }
+
+document.getElementById("moveButton").addEventListener("click", async function (event) {
+
+    var result = sendDice(diceRoll, selectedToken.id);
+
+    if (result == "placeholder") {
+        connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
+            return console.error(err.toString());
+        });
+        connection.invoke("SendMessage", groupName, selectedPlayer, " made a move!").catch(function (err) {
+            return console.error(err.toString());
+        });
+        connection.invoke("PlayerTurn", groupName).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    else {
+
+        if (markedCellId != null) {
+            document.getElementById(markedCellId).classList.remove("selectionToken");
+            markedCellId = null;
+        }
+        document.getElementById("prompt").innerHTML = result + " Choose another token";
+        document.getElementById("moveButton").disabled = true;
+    }
+});
+document.getElementById("passMoveButton").addEventListener("click", async function (event) {
+
+        connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
+            return console.error(err.toString());
+        });
+        connection.invoke("SendMessage", groupName, selectedPlayer, " passed the move to the next player").catch(function (err) {
+            return console.error(err.toString());
+        });
+        connection.invoke("PlayerTurn", groupName).catch(function (err) {
+            return console.error(err.toString());
+        });
+});
