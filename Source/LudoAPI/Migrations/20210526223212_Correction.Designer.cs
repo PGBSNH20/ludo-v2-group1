@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LudoAPI.Migrations
+namespace Ludo.API.Migrations
 {
     [DbContext(typeof(LudoContext))]
-    [Migration("20210526080345_AddSquareOccupant")]
-    partial class AddSquareOccupant
+    [Migration("20210526223212_Correction")]
+    partial class Correction
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
