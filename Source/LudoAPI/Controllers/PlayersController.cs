@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Ludo.API.Models;
 
 namespace Ludo.API.Controllers
 {
@@ -22,9 +23,9 @@ namespace Ludo.API.Controllers
         // POST: api/Players/{gameName}
         // Adds a new player to an existing game
         [HttpPost("{gameName}")]
-        public async Task<IActionResult> PostPlayer(string gameName, PlayerTokenColor playerTokenColor)
+        public async Task<IActionResult> PostPlayer(string gameName, PlayerTokenColor player)
         {
-            var result = await _playerRepo.AddPlayer(playerTokenColor.PlayerName, gameName, playerTokenColor.TokenColor);
+            var result = await _playerRepo.AddPlayer(player.PlayerName, gameName, player.TokenColor);
             if (result.Exception != null)
                 return BadRequest(result.Exception.Message);
             return Ok();
@@ -53,11 +54,9 @@ namespace Ludo.API.Controllers
         [HttpPut("dice/{diceNumber}")]
         public async Task<IActionResult> RollDice(int diceNumber, int tokenID)
         {
-            //var result = await _playerRepo.MovePlayer(gameName, player, diceNumber);
-            //if (result.IsCompleted)
-            //    return Ok(JsonSerializer.Serialize($"{player} moved {diceNumber} steps"));
-            //return BadRequest();
-            return Ok();
+
+            var result = await _playerRepo.MovePlayer(gameName, player, diceNumber);
+            return Ok(JsonSerializer.Serialize($"{player} : {result}"));
 
         }
     }

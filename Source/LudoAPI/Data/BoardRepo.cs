@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludo.API.Logic;
 using LudoAPI;
 using LudoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -61,11 +62,12 @@ namespace Ludo.API.Data
             return Task.CompletedTask;
         }
 
-        public async Task<Task> AddBoard(Board board)
+        public async Task<Task> AddBoard(string boardName)
         {
+            Board board = GameFactory.CreateBoard(boardName);
             try
             {
-                _context.Board.Add(board);
+                await _context.Board.AddAsync(board);
                 await _context.SaveChangesAsync();
                 return Task.CompletedTask;
             }

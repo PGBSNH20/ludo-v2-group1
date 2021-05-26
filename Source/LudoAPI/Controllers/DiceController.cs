@@ -15,7 +15,7 @@ namespace Ludo.API.Controllers
     {
         //api/dice
         [HttpGet]
-        public async Task<ActionResult<int>> RollDice()
+        public IActionResult RollDice()
         {
             return Ok(Dice.RollDice());
         }
