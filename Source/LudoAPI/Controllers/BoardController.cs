@@ -71,13 +71,13 @@ namespace Ludo.API.Controllers
         // POST: api/Board
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Board>> AddBoard(Board board)
+        public async Task<ActionResult<Board>> AddBoard([FromBody]string boardName)
         {
-            var result = await _boardRepo.AddBoard(board);
+            var result = await _boardRepo.AddBoard(boardName);
 
             if(result.Exception != null)
                 return BadRequest();
-            return Ok(board);
+            return Ok(result);
         }
 
         // DELETE: api/Board/5

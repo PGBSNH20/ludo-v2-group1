@@ -9,6 +9,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Ludo.API.Logic;
+using Ludo.API.Models;
 using LudoAPI.Models;
 using Newtonsoft.Json;
 using RestSharp;
@@ -21,8 +22,7 @@ namespace Ludo.Web
 
         public async Task<HttpResponseMessage> AddBoard(string boardName)
         {
-            var board = GameFactory.CreateBoard(boardName);
-            var json = JsonConvert.SerializeObject(board);
+            var json = JsonConvert.SerializeObject(boardName);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _client.PostAsync("https://localhost/api/board/", data);
             return response;
@@ -62,9 +62,9 @@ namespace Ludo.Web
             HttpResponseMessage response = await _client.PutAsync($"https://localhost/api/players/turn/{gameName}", data);
             return response;
         }
-        public async Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor)
+        public async Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameAndColor)
         {
-            var json = JsonConvert.SerializeObject(nameColor);
+            var json = JsonConvert.SerializeObject(nameAndColor);
             
             var client = new RestClient("https://localhost/api/players/");
             var request = new RestRequest($"{gameName}", Method.POST).AddJsonBody(json);
@@ -78,7 +78,7 @@ namespace Ludo.Web
         Task<HttpResponseMessage> AddBoard(string boardName);
         Task<Board> GetBoardAsync(string path);
         Task<Board> GetGameAsync(string boardName);
-        Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameColor);
+        Task<RestResponse> PostPlayer(string gameName, PlayerTokenColor nameAndColor);
         Task<string> GetPlayerTurn(string gameName);
         Task<HttpResponseMessage> AddPlayerTurn(string gameName, string playerName);
     }
