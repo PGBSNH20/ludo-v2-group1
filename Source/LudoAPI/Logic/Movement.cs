@@ -9,11 +9,11 @@ namespace Ludo.API.Logic
 {
     public static class Movement
     {
-        public static string Move(Board board, Player player, int dice)
+        public static string Move(Board board, Player player, Token token, int dice)
         {
             string push = "";
             // If token is on the base
-            if (!player.Tokens[0].IsActive)
+            if (!token.IsActive)
             {
                 if (dice != 6)
                 {
@@ -22,7 +22,7 @@ namespace Ludo.API.Logic
 
                 var startSquareForThisToken =
                     board.Squares.First(s =>
-                        s.Index == player.Tokens[0].Route[0].Index); // A square from which the token starts moving on the board
+                        s.Index == token.Route[0].Index); // A square from which the token starts moving on the board
                 int numberOfOccupants =
                     startSquareForThisToken.Occupants
                         .Count; // Number of tokens that are already on the start square for this token
@@ -31,40 +31,40 @@ namespace Ludo.API.Logic
                     return "Start square is blocked!";
                 }
 
-                if (numberOfOccupants == 1 && startSquareForThisToken.Occupants[0].Occupant.Color != player.Tokens[0].Color) // If one opponents token is on the start square - push the opponents token to its base
+                if (numberOfOccupants == 1 && startSquareForThisToken.Occupants[0].Occupant.Color != token.Color) // If one opponents token is on the start square - push the opponents token to its base
                 {
                     Push(startSquareForThisToken);
                     push = "Push! ";
                 }
             }
-            List<Square> shortRoute = GetShortRoute(board, player, dice); // A list with squares between a square where token is now and a square where the token should go.
-            bool isShortRouteBlocked = IsBlocked(shortRoute, player);
+            List<Square> shortRoute = GetShortRoute(board, dice, token); // A list with squares between a square where token is now and a square where the token should go.
+            bool isShortRouteBlocked = IsBlocked(shortRoute, token);
 
             if (isShortRouteBlocked) return "Route is blocked!";
 
-            var currentSquare = board.Squares.Single(s => s.Index == player.Tokens[0].Route[player.Tokens[0].Steps].Index);
-            if (player.Tokens[0].Steps + dice >= player.Tokens[0].Route.Count - 1)
+            var currentSquare = board.Squares.Single(s => s.Index == token.Route[token.Steps].Index);
+            if (token.Steps + dice >= token.Route.Count - 1)
             {
-                if (player.Tokens[0].Steps + dice == player.Tokens[0].Route.Count - 1)
+                if (token.Steps + dice == token.Route.Count - 1)
                 {
-                    var toRemove = currentSquare.Occupants.First(o => o.Occupant == player.Tokens[0]);
+                    var toRemove = currentSquare.Occupants.First(o => o.Occupant == token);
                     currentSquare.Occupants.Remove(toRemove);
-                    player.Tokens.Remove(player.Tokens[0]);
+                    player.Tokens.Remove(token);
                     return player.Tokens.Count == 0 ? "Win!" : "Token at the finish!";
                 }
 
                 return "Token moves to the home triangle only with an exact roll.";
             }
-            var nextSquare = board.Squares.Single(s => s.Index == player.Tokens[0].Route[player.Tokens[0].Steps + dice].Index);
+            var nextSquare = board.Squares.Single(s => s.Index == token.Route[token.Steps + dice].Index);
 
-            if (nextSquare.Occupants.Count == 1 && nextSquare.Occupants[0].Occupant.Color != player.Tokens[0].Color) // If one opponents token is on the square where the token lands - push the opponents token to its base
+            if (nextSquare.Occupants.Count == 1 && nextSquare.Occupants[0].Occupant.Color != token.Color) // If one opponents token is on the square where the token lands - push the opponents token to its base
             {
                 Push(nextSquare);
                 push = "Push! ";
             }
-            player.Tokens[0].Steps += dice; // Update tokens position
-            nextSquare.Occupants.Add(new SquareOccupant {Occupant = player.Tokens[0]});
-            var square = currentSquare.Occupants.First(o => o.Occupant == player.Tokens[0]);
+            token.Steps += dice; // Update tokens position
+            nextSquare.Occupants.Add(new SquareOccupant {Occupant = token});
+            var square = currentSquare.Occupants.First(o => o.Occupant == token);
             currentSquare.Occupants.Remove(square);
             return (push + "You made a move!");
         }
@@ -77,13 +77,13 @@ namespace Ludo.API.Logic
             square.Occupants.Remove(sq);
         }
 
-        private static List<Square> GetShortRoute(Board board, Player player, int dice) // Return a list with squares between a square where token is now and a square where the token should go. The list depends on tokens route, dice and current position.
+        private static List<Square> GetShortRoute(Board board, int dice, Token token) // Return a list with squares between a square where token is now and a square where the token should go. The list depends on tokens route, dice and current position.
         {
             var shortRoute = new List<Square>();
             int i = 1;
-            while (player.Tokens[0].Steps + i < player.Tokens[0].Route.Count && i <= dice) // Condition ((Steps + i) < Route.Length) needs if token is near finish.
+            while (token.Steps + i < token.Route.Count && i <= dice) // Condition ((Steps + i) < Route.Length) needs if token is near finish.
             {
-                int squareID = player.Tokens[0].Route[player.Tokens[0].Steps + i].Index;
+                int squareID = token.Route[token.Steps + i].Index;
                 Square s = board.Squares.Single(el => el.Index == squareID);
                 shortRoute.Add(s);
                 i++;
@@ -91,7 +91,7 @@ namespace Ludo.API.Logic
             return shortRoute;
         }
 
-        private static bool IsBlocked(List<Square> shortRoute, Player player)
+        private static bool IsBlocked(List<Square> shortRoute, Token token)
         {
             Square endSquare = shortRoute.Last();
             if (endSquare.Occupants.Count == 2)
@@ -101,7 +101,7 @@ namespace Ludo.API.Logic
 
             foreach (Square s in shortRoute)
             {
-                if (s.Occupants.Count == 2 && s.Occupants[0].Occupant.Color != player.Tokens[0].Color)
+                if (s.Occupants.Count == 2 && s.Occupants[0].Occupant.Color != token.Color)
                 {
                     return true;
                 }

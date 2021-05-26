@@ -85,29 +85,23 @@ namespace Ludo.API.Data
             return Task.CompletedTask;
         }
 
-        public async Task<string> MovePlayer(string gameName, string playerName, int diceNumber)
+        public async Task<string> MovePlayer(int tokenId, int diceNumber)
         {
-            Board board = await _context.Board.Include(b => b.Players).ThenInclude(p => p.Tokens).ThenInclude(r => r.Route).Include(s => s.Squares).ThenInclude(o => o.Occupants).Where(b => b.BoardName == gameName).FirstAsync();
-            var playerToMove = board.Players.First(p => p.Name == playerName);
-            var result = Movement.Move(board, playerToMove, diceNumber);
+            Token token = await _context.Token.Where(t => t.Id == tokenId).SingleAsync();
+            int playerToMoveId = token.PlayerId;
+            Player playerToMove = await _context.Player.Where(p => p.Id == playerToMoveId).SingleAsync();
+            int boardId = playerToMove.BoardId;
+            Board board = await _context.Board.Include(b => b.Players).ThenInclude(p => p.Tokens).ThenInclude(r => r.Route).Include(s => s.Squares).ThenInclude(o => o.Occupants).Where(b => b.Id==boardId).FirstAsync();
+            var result = Movement.Move(board, playerToMove, token, diceNumber);
             await _context.SaveChangesAsync();
-            //playerToMove[0].Steps += diceNumber;
-
-            //if (diceNumber + playerToMove[0].SquareID > 51)
-            //    playerToMove[0].SquareID = 0;
-            //playerToMove[0].SquareID += diceNumber;
 
             if (result.Contains("You made a move!") || result == "Token at the finish!")
                 return result;
             if (result == "Win!")
-                return $"{playerName} won";
+                return $"{playerToMove} won";
 
             return result;
         }
-
-
-
-
 
         private static bool HasThisColor(TokenColor color, List<Player> players)
         {

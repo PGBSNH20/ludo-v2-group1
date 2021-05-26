@@ -76,9 +76,12 @@ async function getDice() {
     var data = await msg.json();
     return data;
 }
+//[HttpPut("dice/{gameName}")]
+//public async Task < IActionResult > RollDice(string gameName, [FromBody] string player, [FromQuery] int diceNumber)
+
 
 function sendDice(dice, tokenID) {
-//    //PUT request with body equal on data in JSON format
+////    //PUT request with body equal on data in JSON format
 //    fetch('https://localhost/api/players/dice/'+tokenID+'?diceNumber='+dice, {
 //            method: 'PUT'
 //        })
