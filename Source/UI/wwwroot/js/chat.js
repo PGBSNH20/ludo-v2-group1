@@ -13,7 +13,7 @@ var colors = ["b", "y", "r", "g"];
 window.onload = UpdateBoard();
 connection.on("ReceiveMessage", function (user, message) { // A connection on SingalR method SendMessage returns a string in the message list html
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = user + " rolls " + msg;
+    var encodedMsg = user + msg;
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
@@ -66,6 +66,9 @@ document.getElementById("rollDiceButton").addEventListener("click", async  funct
     document.getElementById("rollDiceButton").disabled = true;
     document.getElementById("passMoveButton").disabled = false;
     document.getElementsByClassName("game")[0].addEventListener("click", SelectToken);
+    connection.invoke("SendMessage", groupName, selectedPlayer, " rolls "+diceRoll.toString()).catch(function (err) {
+        return console.error(err.toString());
+    });
 });
 
 async function getDice() {
@@ -75,8 +78,6 @@ async function getDice() {
 }
 
 function sendDice(dice, tokenID) {
-    console.log("dice:" + dice + "  tokenID:" + tokenID);
-    return "placeholder"; 
 //    //PUT request with body equal on data in JSON format
 //    fetch('https://localhost/api/players/dice/'+tokenID+'?diceNumber='+dice, {
 //            method: 'PUT'
@@ -90,6 +91,7 @@ function sendDice(dice, tokenID) {
 //        .catch((error) => {
 //            console.error('Error:', error);
 //        });
+    return "placeholder"; 
 }
 
 
@@ -191,7 +193,7 @@ document.getElementById("moveButton").addEventListener("click", async function (
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
             return console.error(err.toString());
         });
-        connection.invoke("SendMessage", groupName, selectedPlayer, diceRoll.toString()).catch(function (err) {
+        connection.invoke("SendMessage", groupName, selectedPlayer, " made a move!").catch(function (err) {
             return console.error(err.toString());
         });
         connection.invoke("PlayerTurn", groupName).catch(function (err) {
@@ -213,7 +215,7 @@ document.getElementById("passMoveButton").addEventListener("click", async functi
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
             return console.error(err.toString());
         });
-        connection.invoke("SendMessage", groupName, selectedPlayer, "passes the move to the next player").catch(function (err) {
+        connection.invoke("SendMessage", groupName, selectedPlayer, " passed the move to the next player").catch(function (err) {
             return console.error(err.toString());
         });
         connection.invoke("PlayerTurn", groupName).catch(function (err) {
