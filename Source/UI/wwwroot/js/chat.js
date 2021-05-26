@@ -7,6 +7,7 @@ var oldTokens = []; // array with squareID where tokens are placed
 var board;
 var selectedPlayer = null;
 var selectedToken = null;
+var markedCellId = null;
 var colors = ["b", "y", "r", "g"];
 
 window.onload = UpdateBoard();
@@ -56,7 +57,6 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
     connection.invoke("PlayerTurn", groupName).catch(function(err) {
         return console.error(err.toString());
     });
-
 });
 
 document.getElementById("rollDiceButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
@@ -102,6 +102,9 @@ async function UpdateBoard() {
         }
         oldTokens = []; 
     }
+    if (markedCellId != null) {
+        document.getElementById(markedCellId).classList.remove("selectionToken");
+    }
     // get informations from API about position of tokens 
     var boardAnswer = await fetch('https://localhost/api/Game/' + groupName);
     board = await boardAnswer.json();
@@ -143,10 +146,23 @@ function SelectToken(e) {
         document.getElementById("prompt").innerHTML = "You have chosen a token on the square " + selectedSquare;
         selectedToken = board.players.find(p => p.name == selectedPlayer).tokens[indexOfSelectedToken];
         document.getElementById("moveButton").disabled = false;
+
+        if (markedCellId != null) {
+            document.getElementById(markedCellId).classList.remove("selectionToken");
+        }
+        markedCellId = selectedSquare;
+        document.getElementById(markedCellId).classList.add("selectionToken");
+
+        document.getElementById(markedCellId).classList.add("selectionToken");
     }
     else {
         document.getElementById("prompt").innerHTML = "Choose a token";
         document.getElementById("moveButton").disable = true;
+        if (markedCellId != null) {
+            document.getElementById(markedCellId).classList.remove("selectionToken");
+            markedCellId = null;
+        }
+
     }
 }
 
@@ -183,6 +199,11 @@ document.getElementById("moveButton").addEventListener("click", async function (
         });
     }
     else {
+
+        if (markedCellId != null) {
+            document.getElementById(markedCellId).classList.remove("selectionToken");
+            markedCellId = null;
+        }
         document.getElementById("prompt").innerHTML = result + " Choose another token";
         document.getElementById("moveButton").disabled = true;
     }
@@ -192,7 +213,9 @@ document.getElementById("passMoveButton").addEventListener("click", async functi
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
             return console.error(err.toString());
         });
-
+        connection.invoke("SendMessage", groupName, selectedPlayer, "passes the move to the next player").catch(function (err) {
+            return console.error(err.toString());
+        });
         connection.invoke("PlayerTurn", groupName).catch(function (err) {
             return console.error(err.toString());
         });
