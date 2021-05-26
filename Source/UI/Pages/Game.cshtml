@@ -5,8 +5,7 @@
 <link rel="stylesheet" href="~/css/ludo.css" />
 
 <h2 id="groupName">@Model.Board.BoardName</h2>
-<h4 id="selectedPlayer" style="display: none"></h4>
-<h4 id="playerTurn"></h4>
+<h4 id="selectedPlayer"></h4>
 <h4 id="prompt"></h4>
 
 <div class="container">
@@ -22,16 +21,18 @@
         </div>
         <div class="col-4"><input type="submit" id="userSubmit" value="Connect to game" class="btn btn-primary" /></div>
     </div>
-
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <div class="col-6">
-            <input type="button" id="rollDiceButton" value="Roll Dice" class="btn btn-warning" />
-        </div>
-    </div>
-    <h4 id="dice" style="display: none"></h4>
-    <input type="submit" id="moveButton" value="Move token" style="display: none" class="btn btn-warning">
 </div>
+
+<div class="gameProgressInfo" style="display:none">
+    <h4 id="dice"></h4>
+    <div class="row">&nbsp;</div>
+    <div class="col-6" id="buttons">
+        <input type="button" id="rollDiceButton" value="Roll Dice" class="btn btn-primary" />
+        <input type="submit" id="moveButton" value="Move token" class="btn btn-primary">
+        <input type="submit" id="passMoveButton" value="Pass move" class="btn btn-primary">
+    </div>
+</div>
+
 <div class="row">
     <div class="col-12">
         <hr />
