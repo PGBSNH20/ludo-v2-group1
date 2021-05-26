@@ -28,24 +28,29 @@ namespace Ludo.API.Logic
         public static Player NewPlayer(string name, Board board, TokenColor tokenColor) // Create a new player and add the tokens to the player
         {
             var player = new Player { Name = name };
+            SquareOccupant occupant = new SquareOccupant();
             player.Tokens = CreateTokens(tokenColor, player); // Add tokens yo the player
 
             switch (tokenColor) // Set starting position
             {
                 case TokenColor.Blue:
-                    board.Squares[39].Occupants.Add(player.Tokens[0]);
+                    occupant.Occupant = player.Tokens[0];
+                    board.Squares.First(i => i.Index == 39).Occupants.Add(occupant);
                     break;
 
                 case TokenColor.Yellow:
-                    board.Squares[26].Occupants.Add(player.Tokens[0]);
+                    occupant.Occupant = player.Tokens[0];
+                    board.Squares.First(i => i.Index == 26).Occupants.Add(occupant);
                     break;
 
                 case TokenColor.Green:
-                    board.Squares[13].Occupants.Add(player.Tokens[0]);
+                    occupant.Occupant = player.Tokens[0];
+                    board.Squares.First(i => i.Index == 13).Occupants.Add(occupant);
                     break;
 
                 case TokenColor.Red:
-                    board.Squares[0].Occupants.Add(player.Tokens[0]);
+                    occupant.Occupant = player.Tokens[0];
+                    board.Squares.First(i => i.Index == 0).Occupants.Add(occupant);
                     break;
             }
 
@@ -111,7 +116,7 @@ namespace Ludo.API.Logic
             var squares = new List<Square>();
             for (int i = 0; i <= 51; i++)
             {
-                squares.Add(new Square { Id = i });
+                squares.Add(new Square { Index = i });
             }
 
             int k = 1;
@@ -119,20 +124,11 @@ namespace Ludo.API.Logic
             {
                 for (int j = 1; j < 7; j++)
                 {
-                    squares.Add(new Square { Id = 100 * k + j });
+                    squares.Add(new Square { Index = 100 * k + j });
                 }
                 k++;
             }
             return squares;
         }
-        //public static List<Token> CreateTokens(TokenColor color) // Create 4 tokense and first token in the list active.
-        //{
-        //    var tempList = new List<Token>();
-        //    for (int i = 0; i < 4; i++) // Add tokens, first one is set to be active, rest is inactive.
-        //    {
-        //        tempList.Add(i == 0 ? new Token { Color = color, IsActive = true } : new Token { Color = color });
-        //    }
-        //    return tempList;
-        //}
     }
 }

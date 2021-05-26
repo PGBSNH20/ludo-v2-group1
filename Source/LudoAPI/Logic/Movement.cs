@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludo.API.Models;
 using LudoAPI.Models;
 
 namespace Ludo.API.Logic
@@ -21,7 +22,7 @@ namespace Ludo.API.Logic
 
                 var startSquareForThisToken =
                     board.Squares.First(s =>
-                        s.Id == player.Tokens[0].Route[0].Index); // A square from which the token starts moving on the board
+                        s.Index == player.Tokens[0].Route[0].Index); // A square from which the token starts moving on the board
                 int numberOfOccupants =
                     startSquareForThisToken.Occupants
                         .Count; // Number of tokens that are already on the start square for this token
@@ -30,7 +31,7 @@ namespace Ludo.API.Logic
                     return "Start square is blocked!";
                 }
 
-                if (numberOfOccupants == 1 && startSquareForThisToken.Occupants[0].Color != player.Tokens[0].Color) // If one opponents token is on the start square - push the opponents token to its base
+                if (numberOfOccupants == 1 && startSquareForThisToken.Occupants[0].Occupant.Color != player.Tokens[0].Color) // If one opponents token is on the start square - push the opponents token to its base
                 {
                     Push(startSquareForThisToken);
                     push = "Push! ";
@@ -41,36 +42,39 @@ namespace Ludo.API.Logic
 
             if (isShortRouteBlocked) return "Route is blocked!";
 
-            var currentSquare = board.Squares.Single(s => s.Id == player.Tokens[0].Route[player.Tokens[0].Steps].Index);
+            var currentSquare = board.Squares.Single(s => s.Index == player.Tokens[0].Route[player.Tokens[0].Steps].Index);
             if (player.Tokens[0].Steps + dice >= player.Tokens[0].Route.Count - 1)
             {
                 if (player.Tokens[0].Steps + dice == player.Tokens[0].Route.Count - 1)
                 {
-                    currentSquare.Occupants.Remove(player.Tokens[0]);
+                    var toRemove = currentSquare.Occupants.First(o => o.Occupant == player.Tokens[0]);
+                    currentSquare.Occupants.Remove(toRemove);
                     player.Tokens.Remove(player.Tokens[0]);
                     return player.Tokens.Count == 0 ? "Win!" : "Token at the finish!";
                 }
 
                 return "Token moves to the home triangle only with an exact roll.";
             }
-            var nextSquare = board.Squares.Single(s => s.Id == player.Tokens[0].Route[player.Tokens[0].Steps + dice].Index);
+            var nextSquare = board.Squares.Single(s => s.Index == player.Tokens[0].Route[player.Tokens[0].Steps + dice].Index);
 
-            if (nextSquare.Occupants.Count == 1 && nextSquare.Occupants[0].Color != player.Tokens[0].Color) // If one opponents token is on the square where the token lands - push the opponents token to its base
+            if (nextSquare.Occupants.Count == 1 && nextSquare.Occupants[0].Occupant.Color != player.Tokens[0].Color) // If one opponents token is on the square where the token lands - push the opponents token to its base
             {
                 Push(nextSquare);
                 push = "Push! ";
             }
             player.Tokens[0].Steps += dice; // Update tokens position
-            nextSquare.Occupants.Add(player.Tokens[0]);
-            currentSquare.Occupants.Remove(player.Tokens[0]);
+            nextSquare.Occupants.Add(new SquareOccupant {Occupant = player.Tokens[0]});
+            var square = currentSquare.Occupants.First(o => o.Occupant == player.Tokens[0]);
+            currentSquare.Occupants.Remove(square);
             return (push + "You made a move!");
         }
         private static void Push(Square square) // Move token from square "square" to the tokens base
         {
-            Token occupant = square.Occupants[0];
+            Token occupant = square.Occupants[0].Occupant;
             occupant.IsActive = false;
             occupant.Steps = 0;
-            square.Occupants.Remove(occupant);
+            var sq = square.Occupants.First(o => o.Occupant == occupant);
+            square.Occupants.Remove(sq);
         }
 
         private static List<Square> GetShortRoute(Board board, Player player, int dice) // Return a list with squares between a square where token is now and a square where the token should go. The list depends on tokens route, dice and current position.
@@ -80,7 +84,7 @@ namespace Ludo.API.Logic
             while (player.Tokens[0].Steps + i < player.Tokens[0].Route.Count && i <= dice) // Condition ((Steps + i) < Route.Length) needs if token is near finish.
             {
                 int squareID = player.Tokens[0].Route[player.Tokens[0].Steps + i].Index;
-                Square s = board.Squares.Single(el => el.Id == squareID);
+                Square s = board.Squares.Single(el => el.Index == squareID);
                 shortRoute.Add(s);
                 i++;
             }
@@ -97,7 +101,7 @@ namespace Ludo.API.Logic
 
             foreach (Square s in shortRoute)
             {
-                if (s.Occupants.Count == 2 && s.Occupants[0].Color != player.Tokens[0].Color)
+                if (s.Occupants.Count == 2 && s.Occupants[0].Occupant.Color != player.Tokens[0].Color)
                 {
                     return true;
                 }

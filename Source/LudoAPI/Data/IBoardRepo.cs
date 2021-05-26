@@ -9,7 +9,7 @@ namespace Ludo.API.Data
         Task<List<Board>> GetAllBoards();
         Task<Board> GetBoardByName(string name);
         Task<Task> UpdateBoard(int id, Board board);
-        Task<Task> AddBoard(Board board);
+        Task<Task> AddBoard(string boardName);
         Task<Task> DeleteBoard(string name);
     }
 }
