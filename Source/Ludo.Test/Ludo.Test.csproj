@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LudoAPI\Ludo.API.csproj" />
+    <ProjectReference Include="..\UI\Ludo.Web.csproj" />
   </ItemGroup>
 
 </Project>
