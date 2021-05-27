@@ -16,8 +16,6 @@ namespace LudoAPI
         public DbSet<Board> Board { get; set; }
         public DbSet<Player> Player { get; set; }
         public DbSet<Token> Token { get; set; }
-        public DbSet<Route> Route { get; set; }
-        public DbSet<Square> Square { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder) // for tests
         {
 

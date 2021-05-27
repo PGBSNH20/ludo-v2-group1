@@ -14,8 +14,8 @@ namespace Ludo.API.Logic
             var tempList = new List<Token>();
             for (int i = 0; i < 4; i++) // Add tokens, first one is set to be active, rest is inactive.
             {
-                tempList.Add(i == 0 ? new Token { Color = color, IsActive = true, PlayerId = player.Id, Route = GetRoute(color) }
-                : new Token { Color = color, PlayerId = player.Id, Route = GetRoute(color) });
+                tempList.Add(i == 0 ? new Token { Color = color, IsActive = true, Route = GetRoute(color) }
+                : new Token { Color = color, Route = GetRoute(color) });
             }
             return tempList;
         }
@@ -28,66 +28,58 @@ namespace Ludo.API.Logic
         public static Player NewPlayer(string name, Board board, TokenColor tokenColor) // Create a new player and add the tokens to the player
         {
             var player = new Player { Name = name };
-            SquareOccupant occupant = new SquareOccupant();
-            player.Tokens = CreateTokens(tokenColor, player); // Add tokens yo the player
+            player.Tokens = CreateTokens(tokenColor, player); // Add tokens to the player
 
             switch (tokenColor) // Set starting position
             {
                 case TokenColor.Blue:
-                    occupant.Occupant = player.Tokens[0];
-                    board.Squares.First(i => i.Index == 39).Occupants.Add(occupant);
+                    board.Squares[39].Occupants.Add(player.Tokens[0]);
                     break;
 
                 case TokenColor.Yellow:
-                    occupant.Occupant = player.Tokens[0];
-                    board.Squares.First(i => i.Index == 26).Occupants.Add(occupant);
+                    board.Squares[26].Occupants.Add(player.Tokens[0]);
                     break;
 
                 case TokenColor.Green:
-                    occupant.Occupant = player.Tokens[0];
-                    board.Squares.First(i => i.Index == 13).Occupants.Add(occupant);
+                    board.Squares[13].Occupants.Add(player.Tokens[0]);
                     break;
 
                 case TokenColor.Red:
-                    occupant.Occupant = player.Tokens[0];
-                    board.Squares.First(i => i.Index == 0).Occupants.Add(occupant);
+                    board.Squares[0].Occupants.Add(player.Tokens[0]);
                     break;
             }
 
             return player;
         }
 
-        public static Route[] CreateRoute(int delta, int startColor) // Create array with squareIDs that token needs to pass through. Delta and startColor depends on tokens color.
+        public static int[] CreateRoute(int delta, int startColor) // Create array with squareIDs that token needs to pass through. Delta and startColor depends on tokens color.
         {
-            Route[] route = new Route[57];
-            for (int i = 0; i < route.Length; i++)
-            {
-                route[i] = new Route();
-            }
+            int[] route = new int[57];
+
             for (int i = 0; i < 51; i++)
             {
                 int index = i + delta;
                 if (index <= 51)
                 {
-                    route[i].Index = index;
+                    route[i] = index;
                 }
                 else
                 {
-                    route[i].Index = index - 52;
+                    route[i] = index - 52;
                 }
             }
             for (int i = 51; i < 57; i++)
             {
-                route[i].Index = startColor;
+                route[i] = startColor;
                 startColor++;
             }
 
             return route;
         }
 
-        public static List<Route> GetRoute(TokenColor color)
+        public static int[] GetRoute(TokenColor color)
         {
-            Route[] route = new Route[57];
+            int[] route = new int[57];
 
             switch (color) // Set the route depending on token color
             {
@@ -108,7 +100,7 @@ namespace Ludo.API.Logic
                     break;
             }
 
-            return route.ToList();
+            return route;
         }
 
         public static List<Square> CreateSquares()
@@ -116,7 +108,7 @@ namespace Ludo.API.Logic
             var squares = new List<Square>();
             for (int i = 0; i <= 51; i++)
             {
-                squares.Add(new Square { Index = i });
+                squares.Add(new Square { Id = i });
             }
 
             int k = 1;
@@ -124,7 +116,7 @@ namespace Ludo.API.Logic
             {
                 for (int j = 1; j < 7; j++)
                 {
-                    squares.Add(new Square { Index = 100 * k + j });
+                    squares.Add(new Square { Id = 100 * k + j });
                 }
                 k++;
             }
