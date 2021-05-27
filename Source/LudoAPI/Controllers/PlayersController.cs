@@ -54,8 +54,7 @@ namespace Ludo.API.Controllers
         public async Task<IActionResult> RollDice(int tokenId, int diceNumber)
         {
             var result = await _playerRepo.MovePlayer(tokenId, diceNumber);
-            return Ok(result);
-
+            return Ok(JsonSerializer.Serialize($"{result}"));
         }
     }
 }
