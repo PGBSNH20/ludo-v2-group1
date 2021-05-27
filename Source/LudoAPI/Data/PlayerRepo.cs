@@ -23,8 +23,9 @@ namespace Ludo.API.Data
             {
                 // Validate game name
                 gameName = gameName.ToLower();
-                var board = await _context.Board.Where(b => b.BoardName == gameName).Include(s => s.Squares).FirstAsync();
+                var board = await _context.Board.Where(b => b.BoardName == gameName).FirstAsync();
                 if (board == null) return Task.FromException(new ArgumentException("There is no such game."));
+                board.Squares = GameFactory.CreateSquares();
 
                 var players = _context.Player.Where(p => p.BoardId == board.Id).Include(t => t.Tokens).ToList();
 
@@ -41,16 +42,10 @@ namespace Ludo.API.Data
                 if (HasThisColor(selectedColor, players)) return Task.FromException(new ArgumentException("This color has already been chosen by another player"));
 
                 var player = GameFactory.NewPlayer(playerName, board, selectedColor);
-                //player.Name = playerName;
-                //player.Tokens = GameFactory.CreateTokens(selectedColor, player);
                 foreach (Token t in player.Tokens)
                 {
                     t.Route = GameFactory.GetRoute(selectedColor);
-                    t.SquareId = t.Route[t.Steps].Index;
-                    foreach (var r in t.Route)
-                    {
-                        await _context.Route.AddAsync(r);
-                    }
+                    t.SquareId = t.Route[t.Steps];
                 }
 
                 board.Players.Add(player);
@@ -58,7 +53,7 @@ namespace Ludo.API.Data
                 await _context.SaveChangesAsync();
                 return Task.CompletedTask;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Task.FromException(new ArgumentException(e.Message));
             }
@@ -85,29 +80,39 @@ namespace Ludo.API.Data
             return Task.CompletedTask;
         }
 
-        public async Task<string> MovePlayer(string gameName, string playerName, int diceNumber)
+        public async Task<string> MovePlayer(int tokenId, int diceNumber)
         {
-            Board board = await _context.Board.Include(b => b.Players).ThenInclude(p => p.Tokens).ThenInclude(r => r.Route).Include(s => s.Squares).ThenInclude(o => o.Occupants).Where(b => b.BoardName == gameName).FirstAsync();
-            var playerToMove = board.Players.First(p => p.Name == playerName);
-            var result = Movement.Move(board, playerToMove, diceNumber);
+            //Token token = await _context.Token.Where(t => t.Id == tokenId).Include(r=>r.Route).SingleAsync();
+            Token token = await _context.Token.Where(t => t.Id == tokenId).SingleAsync();
+            int playerToMoveId = token.PlayerId;
+            Player playerToMove = await _context.Player.Where(p => p.Id == playerToMoveId).SingleAsync();
+            int boardId = playerToMove.BoardId;
+            Board board = await _context.Board.Include(b => b.Players).ThenInclude(p => p.Tokens).Where(b => b.Id==boardId).FirstAsync();
+            board.Squares = GameFactory.CreateSquares();
+            foreach (var player in board.Players)
+            {
+                TokenColor color = player.Tokens[0].Color;
+                int[] route = GameFactory.GetRoute(color);  // Set the route by finding the color of the loaded token(s).
+
+                foreach (var t in player.Tokens)
+                {
+                    t.Route = route; // Assign route to each token
+                    if (t.IsActive)
+                    {
+                        var SquareId = route[t.Steps];
+                        Square square = board.Squares.Single(s => s.Id == SquareId);
+                        square.Occupants.Add(t);
+                    }
+                }
+            }
+
+            var result = Movement.Move(board, playerToMove, token, diceNumber);
             await _context.SaveChangesAsync();
-            //playerToMove[0].Steps += diceNumber;
 
-            //if (diceNumber + playerToMove[0].SquareID > 51)
-            //    playerToMove[0].SquareID = 0;
-            //playerToMove[0].SquareID += diceNumber;
-
-            if (result.Contains("You made a move!") || result == "Token at the finish!")
-                return result;
             if (result == "Win!")
-                return $"{playerName} won";
-
+                return $"{playerToMove} won";
             return result;
         }
-
-
-
-
 
         private static bool HasThisColor(TokenColor color, List<Player> players)
         {

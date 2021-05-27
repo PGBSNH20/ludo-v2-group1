@@ -77,21 +77,16 @@ async function getDice() {
     return data;
 }
 
-function sendDice(dice, tokenID) {
-//    //PUT request with body equal on data in JSON format
-//    fetch('https://localhost/api/players/dice/'+tokenID+'?diceNumber='+dice, {
-//            method: 'PUT'
-//        })
-//        .then((response) => response.json())
-////Then with the data from the response in JSON...
-//        .then((data) => {
-//            console.log('Success:', data);
-//        })
-////Then with the error genereted...
-//        .catch((error) => {
-//            console.error('Error:', error);
-//        });
-    return "placeholder"; 
+async function sendDice(dice, tokenID) {
+
+    try {
+        var movementResult = await fetch("https://localhost/api/players/dice/" + tokenID + "?diceNumber=" + dice, { "method": "PUT" });
+        var json = await movementResult.json();
+        return json;
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
 
 
@@ -111,7 +106,6 @@ async function UpdateBoard() {
     var boardAnswer = await fetch('https://localhost/api/Game/' + groupName);
     board = await boardAnswer.json();
     var id;
-
     // place tokens on the board
     for (var i = 0; i < board.players.length; i++)
     {
@@ -120,7 +114,7 @@ async function UpdateBoard() {
             var color = token.color;
             var colorTokenClass = colors[color] + '-token';
             if (token.isActive) {
-                id = token.squareID;
+                id = token.squareId;
                 if (document.getElementById(id).classList.contains(colorTokenClass)) {
                     colorTokenClass = colors[color] + '-block';
                     document.getElementById(id).classList.add(colorTokenClass);
@@ -176,7 +170,7 @@ function GetSquaresWithPlayersTokens() {
 
     for (var j = 0; j < tokens.length; j++) {
         if (tokens[j].isActive) {
-            squares.push(tokens[j].squareID.toString());
+            squares.push(tokens[j].squareId.toString());
         }
         else {
             squares.push(colors[color] + j);
@@ -187,13 +181,21 @@ function GetSquaresWithPlayersTokens() {
 
 document.getElementById("moveButton").addEventListener("click", async function (event) {
 
-    var result = sendDice(diceRoll, selectedToken.id);
+    var movementResult = await sendDice(diceRoll, selectedToken.id);
 
-    if (result == "placeholder") {
+    if (movementResult.indexOf("won") > -1) {
+        //TODO
+        //.....
+        connection.invoke("SendMessage", groupName, selectedPlayer, ": " + movementResult).catch(function (err) {
+            return console.error(err.toString());
+        });
+        event.preventDefault();
+    }
+    if (movementResult.indexOf("You made a move!") > -1 || movementResult.indexOf("Token at the finish!")>-1) {
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
             return console.error(err.toString());
         });
-        connection.invoke("SendMessage", groupName, selectedPlayer, " made a move!").catch(function (err) {
+        connection.invoke("SendMessage", groupName, selectedPlayer, ": " + movementResult).catch(function (err) {
             return console.error(err.toString());
         });
         connection.invoke("PlayerTurn", groupName).catch(function (err) {
@@ -206,10 +208,11 @@ document.getElementById("moveButton").addEventListener("click", async function (
             document.getElementById(markedCellId).classList.remove("selectionToken");
             markedCellId = null;
         }
-        document.getElementById("prompt").innerHTML = result + " Choose another token";
+        document.getElementById("prompt").innerHTML = movementResult + " Choose another token";
         document.getElementById("moveButton").disabled = true;
     }
 });
+
 document.getElementById("passMoveButton").addEventListener("click", async function (event) {
 
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {

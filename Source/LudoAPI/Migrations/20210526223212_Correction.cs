@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace LudoAPI.Migrations
+namespace Ludo.API.Migrations
 {
-    public partial class AddRoute : Migration
+    public partial class Correction : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,6 +42,26 @@ namespace LudoAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Square",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Index = table.Column<int>(type: "int", nullable: false),
+                    BoardId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Square", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Square_Board_BoardId",
+                        column: x => x.BoardId,
+                        principalTable: "Board",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Token",
                 columns: table => new
                 {
@@ -50,7 +70,7 @@ namespace LudoAPI.Migrations
                     PlayerId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Steps = table.Column<int>(type: "int", nullable: false),
-                    SquareID = table.Column<int>(type: "int", nullable: false),
+                    SquareId = table.Column<int>(type: "int", nullable: false),
                     Color = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -84,6 +104,32 @@ namespace LudoAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SquareOccupant",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SquareId = table.Column<int>(type: "int", nullable: false),
+                    OccupantId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SquareOccupant", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SquareOccupant_Square_SquareId",
+                        column: x => x.SquareId,
+                        principalTable: "Square",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SquareOccupant_Token_OccupantId",
+                        column: x => x.OccupantId,
+                        principalTable: "Token",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Player_BoardId",
                 table: "Player",
@@ -95,6 +141,21 @@ namespace LudoAPI.Migrations
                 column: "TokenId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Square_BoardId",
+                table: "Square",
+                column: "BoardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SquareOccupant_OccupantId",
+                table: "SquareOccupant",
+                column: "OccupantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SquareOccupant_SquareId",
+                table: "SquareOccupant",
+                column: "SquareId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Token_PlayerId",
                 table: "Token",
                 column: "PlayerId");
@@ -104,6 +165,12 @@ namespace LudoAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Route");
+
+            migrationBuilder.DropTable(
+                name: "SquareOccupant");
+
+            migrationBuilder.DropTable(
+                name: "Square");
 
             migrationBuilder.DropTable(
                 name: "Token");

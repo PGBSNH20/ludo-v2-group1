@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace LudoAPI.Migrations
+namespace Ludo.API.Migrations
 {
     [DbContext(typeof(LudoContext))]
-    [Migration("20210519114552_PlayerTurnName")]
-    partial class PlayerTurnName
+    [Migration("20210527084230_RemoveTablesSquareOccupantsRoute")]
+    partial class RemoveTablesSquareOccupantsRoute
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,37 +20,7 @@ namespace LudoAPI.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("LudoAPI.Models.Board", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BoardName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("PlayerIDLastMadeMove")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PlayerTurnName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Board");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BoardName = "game1",
-                            PlayerIDLastMadeMove = 0
-                        });
-                });
-
-            modelBuilder.Entity("LudoAPI.Models.Player", b =>
+            modelBuilder.Entity("Ludo.API.Models.Player", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,20 +39,25 @@ namespace LudoAPI.Migrations
                     b.HasIndex("BoardId");
 
                     b.ToTable("Player");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BoardId = 1,
-                            Name = "pl1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BoardId = 1,
-                            Name = "pl2"
-                        });
+            modelBuilder.Entity("LudoAPI.Models.Board", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("BoardName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PlayerTurnName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Board");
                 });
 
             modelBuilder.Entity("LudoAPI.Models.Token", b =>
@@ -101,6 +76,9 @@ namespace LudoAPI.Migrations
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SquareId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Steps")
                         .HasColumnType("int");
 
@@ -109,43 +87,9 @@ namespace LudoAPI.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Token");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Color = 2,
-                            IsActive = true,
-                            PlayerId = 1,
-                            Steps = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Color = 2,
-                            IsActive = true,
-                            PlayerId = 1,
-                            Steps = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Color = 0,
-                            IsActive = false,
-                            PlayerId = 2,
-                            Steps = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Color = 0,
-                            IsActive = true,
-                            PlayerId = 2,
-                            Steps = 1
-                        });
                 });
 
-            modelBuilder.Entity("LudoAPI.Models.Player", b =>
+            modelBuilder.Entity("Ludo.API.Models.Player", b =>
                 {
                     b.HasOne("LudoAPI.Models.Board", null)
                         .WithMany("Players")
@@ -156,21 +100,21 @@ namespace LudoAPI.Migrations
 
             modelBuilder.Entity("LudoAPI.Models.Token", b =>
                 {
-                    b.HasOne("LudoAPI.Models.Player", null)
+                    b.HasOne("Ludo.API.Models.Player", null)
                         .WithMany("Tokens")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Ludo.API.Models.Player", b =>
+                {
+                    b.Navigation("Tokens");
+                });
+
             modelBuilder.Entity("LudoAPI.Models.Board", b =>
                 {
                     b.Navigation("Players");
-                });
-
-            modelBuilder.Entity("LudoAPI.Models.Player", b =>
-                {
-                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }
