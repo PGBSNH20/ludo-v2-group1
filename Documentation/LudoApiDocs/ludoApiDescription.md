@@ -1,7 +1,7 @@
 ## Ludo API
 ### Controllers Layer
 
-Endpoints for controllers are described here --> [Controller Endpoints](ludoApiEndpoints).md)
+Endpoints for controllers are described here --> [Controller Endpoints](ludoApiEndpoints.md)
 
 The controllers pass through a repository layer, which returns what the controller asks for. Repo methods are documented at the bottom.
 
