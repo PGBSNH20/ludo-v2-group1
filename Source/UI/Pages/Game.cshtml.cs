@@ -25,5 +25,9 @@ namespace Ludo.Web.Pages
 
             return Page();
         }
+        public ActionResult OnPostNewGame()
+        {
+            return RedirectToPage("NewGame");
+        }
     }
 }
