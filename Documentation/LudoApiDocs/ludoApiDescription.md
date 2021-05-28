@@ -72,8 +72,7 @@ Each player has 4 tokens, if the dice hits a 6, the user can either put a new to
 - `Steps` property of type int. It keeps track of where the token is. A token needs to take 56 steps to reach the finish.
 - `Route` array of type int, to describe which squares the token will be following. Route depends on tokens color.
 - `Id` property of type int. It is used as PK in the database.
-- `PlayerID` property of type int. It determints the player who owns the token, is used as FK in the database. 
-- `Move`(Board board, Player player, int dice) - Method for moving the token x amount of steps depending on the dice result.<br><br>
+- `PlayerID` property of type int. It determints the player who owns the token, is used as FK in the database.<br><br>
 Using `Steps` and `Route` you can determine the `squareID` on which the token is.
 [<img src="https://github.com/PGBSNH20/ludo-v2-group1/blob/main/Documentation/LudoApiDocs/Routes.jpg">](Routes)
 
@@ -89,14 +88,15 @@ Class is used to create the desired objects
 - `NewPlayer` - Creates a player and calls the CreateTokens method. Then sets the correct starting position for the active token.   
 - `CreateTokens` - Creates a list of tokens of selected color for the player and assigns the correct route depending on the color choice.
 - `CreateRoute(TokenColor color)` and `GetRoute(int delta, int startColor)` - Create a route that depends on tokens color.    
-
+#### Movement Class
+- `Move`(Board board, Player player, Token token, int dice) - Method for moving the token x amount of steps depending on the dice result.
 ### DataAccess Layer
 #### BoardRepo Class
 - ``GetAllBoards()`` - Returns all boards from database.
 - ``GetBoardByName(string name)`` - Returns the specified board from databas.
 - ``UpdateBoard(int id, Board board)`` - Updates board and returns completed task or task from exception.
 - ``AddBoard(Board board)`` - Adds board to database and returns completed task or task from exception.
-- ``Deleteboard(string name)`` - Finds the board and deletes it from the database, returns completed task or task from exception.
+- ``DeleteBoard(string name)`` - Finds the board and deletes it from the database, returns completed task or task from exception.
 #### GameRepo Class
 - ``GetGameByName(string name)`` - Returns the board by name and includes players and tokens, returns a ``board``.
 #### PlayerRepo Class
