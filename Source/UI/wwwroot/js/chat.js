@@ -47,6 +47,7 @@ connection.on("GetPlayerTurn", function(playerName) {
         document.getElementById("passMoveButton").disabled = true;
     }
     else {
+        document.getElementsByClassName("game")[0].removeEventListener("click", SelectToken);
         document.getElementsByClassName("gameProgressInfo")[0].style.display = 'none';
         document.getElementById("prompt").innerHTML = "Player Turn - " + playerName;
     }
