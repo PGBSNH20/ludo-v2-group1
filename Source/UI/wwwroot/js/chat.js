@@ -90,7 +90,7 @@ async function getDice() {
 async function sendDice(dice, tokenID) {
 
     try {
-        var movementResult = await fetch("https://localhost/api/players/dice/" + tokenID + "?diceNumber=" + dice, { "method": "PUT" });
+        var movementResult = await fetch("https://localhost/api/tokens/" + tokenID + "?diceNumber=" + dice, { "method": "PUT" });
         var json = await movementResult.json();
         return json;
     }

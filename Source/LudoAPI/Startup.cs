@@ -35,6 +35,7 @@ namespace Ludo.API
             services.AddScoped<IBoardRepo, BoardRepo>();
             services.AddScoped<IPlayerRepo, PlayerRepo>();
             services.AddScoped<IGameRepo, GameRepo>();
+            services.AddScoped<ITokenRepo, TokenRepo>();
 
             services.AddSwaggerGen(c =>
             {
