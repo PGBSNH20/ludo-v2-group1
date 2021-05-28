@@ -80,37 +80,6 @@ namespace Ludo.API.Data
             return Task.CompletedTask;
         }
 
-        public async Task<string> MovePlayer(int tokenId, int diceNumber)
-        {
-            //Token token = await _context.Token.Where(t => t.Id == tokenId).Include(r=>r.Route).SingleAsync();
-            Token token = await _context.Token.Where(t => t.Id == tokenId).SingleAsync();
-            int playerToMoveId = token.PlayerId;
-            Player playerToMove = await _context.Player.Where(p => p.Id == playerToMoveId).SingleAsync();
-            int boardId = playerToMove.BoardId;
-            Board board = await _context.Board.Include(b => b.Players).ThenInclude(p => p.Tokens).Where(b => b.Id==boardId).FirstAsync();
-            board.Squares = GameFactory.CreateSquares();
-            foreach (var player in board.Players)
-            {
-                TokenColor color = player.Tokens[0].Color;
-                int[] route = GameFactory.GetRoute(color);  // Set the route by finding the color of the loaded token(s).
-
-                foreach (var t in player.Tokens)
-                {
-                    t.Route = route; // Assign route to each token
-                    if (t.IsActive)
-                    {
-                        var SquareId = route[t.Steps];
-                        Square square = board.Squares.Single(s => s.Id == SquareId);
-                        square.Occupants.Add(t);
-                    }
-                }
-            }
-
-            var result = Movement.Move(board, playerToMove, token, diceNumber);
-            await _context.SaveChangesAsync();
-            return result;
-        }
-
         private static bool HasThisColor(TokenColor color, List<Player> players)
         {
             foreach (Player p in players)
