@@ -2,10 +2,10 @@
 ## SignalR Implementation i Ludo
 Vi har använt oss av SignalR för att utföra klient-server anrop och uppdatera sidan asynkront.
 
-Våra signaler går genom ``GameHub``. Följade metoder har implementerats:
+Våra signaler går genom ``GameHub``. Följande metoder har implementerats:
 
 ### Send Message
-Metoden skickar meddelandet som innehåller användare och meddelande till alla klienter i en grupp, gruppens namn är samma som spelets namn, javascriptet tar spelnamnet och skickar det till metoden. Metoden skickar sedan ut till ``RecieveMessage`` som är en javascript funktion som skriver ut info och uppdaterar även brädan. Metoden triggar vid dice roll.
+Metoden skickar meddelandet som innehåller användare och meddelande till alla klienter i en grupp, gruppens namn är samma som spelets namn, javascriptet tar spelnamnet och skickar det till metoden. Metoden skickar sedan ut till ``RecieveMessage`` som är en javascript funktion som skriver ut info och uppdaterar även brädan. Metoden triggar vid dice roll samt när användaren trycker på knappar ``Move token`` och ``Pass move``.
 ```csharp
 public async Task SendMessage(string group, string user, string message)
         {
