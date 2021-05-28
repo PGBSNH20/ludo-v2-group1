@@ -58,7 +58,7 @@ namespace Ludo.Test
             
             var actionResult = await controller.GetPlayerTurn("testGame");
 
-            Assert.Equal("Bob", actionResult.ToString());
+            Assert.IsType<OkObjectResult>(actionResult);
         }
     }
 }
