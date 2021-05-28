@@ -43,7 +43,7 @@ namespace Ludo.API.Controllers
         public async Task<IActionResult> AddPlayerTurn(string gameName, [FromBody]string player)
         {
             var result = await _playerRepo.AddPlayerTurnName(gameName, player);
-            if (result == null) return BadRequest();
+            if (result.Exception != null) return BadRequest();
             return Ok();
         }
         [HttpGet("turn/{gameName}")]

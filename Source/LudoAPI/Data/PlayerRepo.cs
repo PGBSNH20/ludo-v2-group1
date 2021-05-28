@@ -73,10 +73,10 @@ namespace Ludo.API.Data
         public async Task<Task> AddPlayerTurnName(string gameName, string playerName)
         {
             Board board = await _context.Board.Where(n => n.BoardName == gameName).Include(p => p.Players).FirstOrDefaultAsync();
-            if (board == null) return null;
+            if (board == null) return Task.FromException(new ArgumentException());
             var list = board.Players;
             int index = list.FindIndex(x => x.Name.ToLower().Equals(playerName.ToLower()));
-            if (index == -1) return null;
+            if (index == -1) return Task.FromException(new ArgumentException());
             if (index + 1 > list.Count - 1)
                 index = -1;
             board.PlayerTurnName = list[index + 1].Name;
