@@ -46,16 +46,14 @@ The main class that stores all the information about the game.
 - ``BoardName`` - string property for name of board.
 - ``List`` of ``Squares`` stores all the squares. See below.
 - ``List`` of ``Players``store all the players. See below.
-- ``LastMadeMove`` property of type ``Player``. It is the player who made the last move in the game. 
-- ``PlayerIDLastMadeMove`` property of type int. It's ID of the player who made the last move in the game. It is used to determine the order of moves in the game after loading the game from a database.
 - ``Id`` property of type int. It is used as PK in the database.
 - ``PlayerTurnName`` of type string. Used to determine who has the next turn.
 
 #### Square Class
-Game board consists of 80 squares. Square number (Id) can be determined in the figure:   
-[<img src="https://github.com/PGBSNH20/ludo-game-team-2/blob/main/Documentation/img/board.jpg">](https://github.com/PGBSNH20/ludo-game-team-2/blob/main/Documentation/img/board.jpg)
+Game board consists of 76 squares. Square number (Id) can be determined in the figure:   
+[<img src="https://github.com/PGBSNH20/ludo-v2-group1/blob/main/Documentation/LudoApiDocs/SquareNumbering.jpg">](SquareNumbering)
 
-- Id property of type int. It determines the square number. It can be 0-55, 101-106, 201-206, 301-306, 401-406.
+- Id property of type int. It determines the square number. It can be 0-51, 101-106, 201-206, 301-306, 401-406.
 - Property Occupants is List of Tokens. It stores tokens that are on this square. Token- see below.      
 
 #### Player Class
@@ -71,13 +69,12 @@ Each player has 4 tokens, if the dice hits a 6, the user can either put a new to
 
 - `IsActive` property of type bool. False - token is on the base, true - token is in play. If a token has reached finish it removes from the game.   
 - `Color` property of type `TokenColor` (enum).
-- `Steps` property of type int. It keeps track of where the token is. A token needs to take 60 steps to reach the finish.
+- `Steps` property of type int. It keeps track of where the token is. A token needs to take 56 steps to reach the finish.
 - `Route` array of type int, to describe which squares the token will be following. Route depends on tokens color.
 - `Id` property of type int. It is used as PK in the database.
-- `PlayerID` property of type int. It determints the player who owns the token, is used as FK in the database. 
-- `Move`(Board board, Player player, int dice) - Method for moving the token x amount of steps depending on the dice result.<br><br>
+- `PlayerID` property of type int. It determints the player who owns the token, is used as FK in the database.<br><br>
 Using `Steps` and `Route` you can determine the `squareID` on which the token is.
-[<img src="https://github.com/PGBSNH20/ludo-game-team-2/blob/main/Documentation/img/SquaresRoutes.jpg">](https://github.com/PGBSNH20/ludo-game-team-2/blob/main/Documentation/img/SquaresRoutes.jpg)
+[<img src="https://github.com/PGBSNH20/ludo-v2-group1/blob/main/Documentation/LudoApiDocs/Routes.jpg">](Routes)
 
 ### Logic Layer
 #### Dice Class
@@ -91,14 +88,15 @@ Class is used to create the desired objects
 - `NewPlayer` - Creates a player and calls the CreateTokens method. Then sets the correct starting position for the active token.   
 - `CreateTokens` - Creates a list of tokens of selected color for the player and assigns the correct route depending on the color choice.
 - `CreateRoute(TokenColor color)` and `GetRoute(int delta, int startColor)` - Create a route that depends on tokens color.    
-
+#### Movement Class
+- `Move`(Board board, Player player, Token token, int dice) - Method for moving the token x amount of steps depending on the dice result.
 ### DataAccess Layer
 #### BoardRepo Class
 - ``GetAllBoards()`` - Returns all boards from database.
 - ``GetBoardByName(string name)`` - Returns the specified board from databas.
 - ``UpdateBoard(int id, Board board)`` - Updates board and returns completed task or task from exception.
 - ``AddBoard(Board board)`` - Adds board to database and returns completed task or task from exception.
-- ``Deleteboard(string name)`` - Finds the board and deletes it from the database, returns completed task or task from exception.
+- ``DeleteBoard(string name)`` - Finds the board and deletes it from the database, returns completed task or task from exception.
 #### GameRepo Class
 - ``GetGameByName(string name)`` - Returns the board by name and includes players and tokens, returns a ``board``.
 #### PlayerRepo Class
