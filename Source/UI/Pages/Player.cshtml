@@ -2,43 +2,69 @@
 @model Ludo.Web.Pages.PlayerModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-<h1>Players in @Model.Board.BoardName:</h1>
-@if (Model.Board.Players.Count == 0)
-{
-    <p>there are no players in the game yet</p>
-}
-<table class="tablePlayers">
-    <tr><td>Name</td><td>Tokens color</td></tr>
-    @foreach (var p in Model.Board.Players)
-    {
-        var color = p.Tokens[0].Color.ToString();
-        <tr>
-            <td>@p.Name</td>
-            <td>@color</td>
-        </tr>
-    }
-</table>
+<div class="container my-5">
+    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+            <h1 class="display-4 fw-bold lh-1">Players in @Model.Board.BoardName</h1>
+            <br />
+            @if (Model.Board.Players.Count == 0)
+            {
+                <p class="lead">There are no players in the game yet</p>
+            }
+            else
+            {
+                <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Color</th>
+                    </tr>
+                </thead>
+                @foreach (var p in Model.Board.Players)
+                {
+                    var color = p.Tokens[0].Color.ToString();
+                    <tr>
+                        <td>@p.Id</td>
+                        <td>@p.Name</td>
+                        <td>@color</td>
+                    </tr>
+                }
+            </table>
+            }
 
-@if (Model.Board.Players.Count < 4)
-{
-    <form method="post">
-        Name:
-        <input asp-for="NameColor.PlayerName" required/>
-        Token Color:
-        <select asp-for="NameColor.TokenColor">
-            <option value="red">Red</option>
-            <option value="green">Green</option>
-            <option value="blue">Blue</option>
-            <option value="yellow">Yellow</option>
-        </select>
-        <input type="submit" asp-page-handler="AddPlayer" value="Add" class="btn-primary" />
-    </form>
-}
-<p>@Model.ErrorMessage</p>
-@if (Model.Board.Players.Count >= 2)
-{
-    <br />
-    <form method="post">
-        <input type="submit" asp-page-handler="StartGame" value="Start game" class="btn-primary" />
-    </form>
-}
+            @if (Model.Board.Players.Count < 4)
+            {
+        <form method="post">
+            Name:
+            <input asp-for="NameColor.PlayerName" required class="form-control">
+            Token Color:
+            <select asp-for="NameColor.TokenColor" class="form-control">
+                <option value="red">Red</option>
+                <option value="green">Green</option>
+                <option value="blue">Blue</option>
+                <option value="yellow">Yellow</option>
+            </select>
+            <br />
+            <p class="lead">@Model.ErrorMessage</p>
+            <br />
+            <input type="submit" asp-page-handler="AddPlayer" value="Add" class="btn btn-primary btn-lg btn-block" />
+        </form>
+            }
+            
+            @if (Model.Board.Players.Count >= 2)
+            {
+                <br />
+                <form method="post">
+                    <input type="submit" asp-page-handler="StartGame" value="Start game" class="btn btn-primary btn-lg btn-block" />
+                </form>
+            }
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+            </div>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+            <img class="rounded-lg-3" src="images/ludo.jpg" alt="" width="600" height="600">
+        </div>
+    </div>
+</div>

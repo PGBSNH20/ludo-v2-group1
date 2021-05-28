@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace UI.Pages
+namespace Ludo.Web.Pages
 {
     public class IndexModel : PageModel
     {
@@ -17,9 +14,16 @@ namespace UI.Pages
             _logger = logger;
         }
 
+        [BindProperty]
+        public string NameOfGame { get; set; }
         public void OnGet()
         {
 
+        }
+
+        public ActionResult OnPostStartGame()
+        {
+            return RedirectToPage("Game", new { boardName = NameOfGame });
         }
     }
 }
