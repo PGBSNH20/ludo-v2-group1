@@ -19,7 +19,8 @@ namespace Ludo.API.Data
         }
         public async Task<string> MoveToken(int tokenId, int diceNumber)
         {
-            Token token = await _context.Token.Where(t => t.Id == tokenId).SingleAsync();
+            Token token = await _context.Token.Where(t => t.Id == tokenId).SingleOrDefaultAsync();
+            if (token == null) return "BadRequest";
             int playerToMoveId = token.PlayerId;
             Player playerToMove = await _context.Player.Where(p => p.Id == playerToMoveId).SingleAsync();
             int boardId = playerToMove.BoardId;
@@ -46,5 +47,6 @@ namespace Ludo.API.Data
             await _context.SaveChangesAsync();
             return result;
         }
+
     }
 }

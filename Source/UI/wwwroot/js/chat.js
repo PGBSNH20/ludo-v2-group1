@@ -23,7 +23,7 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     messagesList.insertBefore(li, latestMessage);
       document.getElementById("messagesList").appendChild(br);
 
-    if (msg.indexOf("win") > -1) {
+    if (msg.indexOf("Win") > -1) {
         document.getElementById("prompt").innerHTML = encodedMsg;
         document.getElementsByClassName("gameProgressInfo")[0].style.display = 'block';
         document.getElementById("rollDiceButton").style.display = 'none';
@@ -200,7 +200,7 @@ document.getElementById("moveButton").addEventListener("click", async function (
 
     var movementResult = await sendDice(diceRoll, selectedToken.id);
 
-    if (movementResult.indexOf("win") > -1) {
+    if (movementResult.indexOf("Win") > -1) {
         // Deletes the game from the DB 
         try {
              fetch("https://localhost/api/board/" + board.boardName, { "method": "DELETE" });
