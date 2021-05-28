@@ -109,4 +109,4 @@ Class is used to create the desired objects
 - ``GetPlayerTurn(string gameName)`` - returns the name of the player who has the next turn.
 - ``AddPlayerTurnName(string gameName, string playerName)`` - Finds all players related to the board in a list, and selects the person below the included ``playerName`` as the next turn name. Returns task completed or task from exception.
 #### TokenRepo Class
-- ``MoveToken(int TokenId, int diceNumber)`` - Calls ``Move`` from ``Movement`` class.
+- ``MoveToken(int TokenId, int diceNumber)`` - downloads ``board`` related to the token from the database , adds missing elements (list of ``Square``) and calls ``Move`` from ``Movement`` class.
