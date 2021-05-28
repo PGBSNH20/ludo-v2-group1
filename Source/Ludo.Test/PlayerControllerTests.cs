@@ -49,5 +49,16 @@ namespace Ludo.Test
 
             Assert.IsType<BadRequestObjectResult>(actionResult);
         }
+        [Fact]
+        public async Task When_Getting_PlayerTurn_For_Existing_Game_Expect_Ok()
+        {
+            var playerRepo = A.Fake<IPlayerRepo>();
+            var controller = new PlayersController(playerRepo);
+            A.CallTo(() => playerRepo.GetPlayerTurn("testGame")).Returns("Bob");
+            
+            var actionResult = await controller.GetPlayerTurn("testGame");
+
+            Assert.Equal("Bob", actionResult.ToString());
+        }
     }
 }

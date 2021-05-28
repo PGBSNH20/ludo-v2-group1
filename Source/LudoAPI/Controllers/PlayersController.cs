@@ -45,9 +45,10 @@ namespace Ludo.API.Controllers
             return Ok();
         }
         [HttpGet("turn/{gameName}")]
-        public async Task<IActionResult> GetPlayerTurn(string gameName, string player)
+        public async Task<IActionResult> GetPlayerTurn(string gameName)
         {
             string name = await _playerRepo.GetPlayerTurn(gameName);
+            if (name == null) return BadRequest();
             return Ok(name);
         }
         [HttpPut("dice/{tokenId}")]

@@ -65,7 +65,8 @@ namespace Ludo.API.Data
         }
         public async Task<string> GetPlayerTurn(string gameName)
         {
-            Board board = await _context.Board.FirstAsync(n => n.BoardName == gameName);
+            Board board = await _context.Board.FirstOrDefaultAsync(n => n.BoardName == gameName);
+            if (board == null) return null;
             return board.PlayerTurnName;
         }
         public async Task<Task> AddPlayerTurnName(string gameName, string playerName)
