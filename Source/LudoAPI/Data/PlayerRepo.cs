@@ -108,9 +108,6 @@ namespace Ludo.API.Data
 
             var result = Movement.Move(board, playerToMove, token, diceNumber);
             await _context.SaveChangesAsync();
-
-            if (result == "Win!")
-                return $"{playerToMove} won";
             return result;
         }
 

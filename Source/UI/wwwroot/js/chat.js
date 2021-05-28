@@ -17,7 +17,17 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("messagesList").appendChild(li);
-    UpdateBoard();
+    if (msg.indexOf("win") > -1) {
+        document.getElementById("prompt").innerHTML = encodedMsg;
+        document.getElementsByClassName("gameProgressInfo")[0].style.display = 'block';
+        document.getElementById("rollDiceButton").style.display = 'none';
+        document.getElementById("moveButton").style.display = 'none';
+        document.getElementById("passMoveButton").style.display = 'none';
+        document.getElementById("newGameButton").style.display = 'block';
+    }
+    else {
+        UpdateBoard();
+    }
 });
 
 connection.on("GetPlayerTurn", function(playerName) {
@@ -183,15 +193,20 @@ document.getElementById("moveButton").addEventListener("click", async function (
 
     var movementResult = await sendDice(diceRoll, selectedToken.id);
 
-    if (movementResult.indexOf("won") > -1) {
-        //TODO
-        //.....
+    if (movementResult.indexOf("win") > -1) {
+        // Deletes the game from the DB 
+        try {
+             fetch("https://localhost/api/board/" + board.boardName, { "method": "DELETE" });
+        }
+        catch (error) {
+            console.log(error);
+        }
         connection.invoke("SendMessage", groupName, selectedPlayer, ": " + movementResult).catch(function (err) {
             return console.error(err.toString());
         });
-        event.preventDefault();
+
     }
-    if (movementResult.indexOf("You made a move!") > -1 || movementResult.indexOf("Token at the finish!")>-1) {
+    else if (movementResult.indexOf("You made a move!") > -1 || movementResult.indexOf("Token at the finish!")>-1) {
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
             return console.error(err.toString());
         });

@@ -52,7 +52,7 @@ namespace Ludo.API.Logic
                     return player.Tokens.Count == 0 ? "Win!" : "Token at the finish!";
                 }
 
-                return "Token moves to the home triangle only with an exact roll.";
+                return "Token moves to the finish square only with an exact roll.";
             }
             var nextSquare = board.Squares.Single(s => s.Id == token.Route[token.Steps + dice]);
 
