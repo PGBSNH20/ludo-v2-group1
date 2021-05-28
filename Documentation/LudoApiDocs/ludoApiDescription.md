@@ -23,19 +23,21 @@ The dice controller returns a random number between **1** and **6**.
 
 #### Game Controller
 
-The game controller is a complete game that returns a board, the players connected to it and all the necessary components (Squares, Routes, etc.).
+The game controller is a complete game that returns a board, the players connected to it and their tokens.
 
 * ``GetGameByName`` - Returns a board that includes ``Player`` and  ``Token`` from the database
 
-#### Player Controller
+#### Players Controller
 
-The player controller handles the actions regarding the players, such as adding a new player to a board and moving the player.
+The player controller handles the actions regarding the players, such as adding a new player to a board.
 
-* ``PostPlayer`` - Calls ``AddPlayer`` from ``PlayerRepo`` that adds the ``Player`` to the specified board
+* ``PostPlayer`` - Calls ``AddPlayer`` from ``PlayerRepo`` that adds the ``Player`` to the specified board.
 * ``GetPlayers(string gameName)`` - Calls ``GetPlayers`` from ``PlayerRepo`` that returns a list of all players related to the specified board.
 * ``AddPlayerTurn(string gameName, [FromBody] string player)`` - Calls ``AddPlayerTurn`` from ``PlayerRepo`` that updates who has the next turn in the database.
-* ``GetPlayerTurn(string gameName, string player)`` - Calls ```GetPlayerTurn`` from ``PlayerRepo`` that returns the name of the player who has the next turn from the database
-* ``RollDice(int diceNumber, int tokenId)`` - Calls ``MovePlayer`` from ``PlayerRepo`` that initiates the moving and returns a string result.
+* ``GetPlayerTurn(string gameName, string player)`` - Calls ``GetPlayerTurn`` from ``PlayerRepo`` that returns the name of the player who has the next turn from the database
+
+#### Tokens Controller
+* ``RollDice(int tokenId, int diceNumber)`` - Calls ``MovePlayer`` from ``TokenRepo`` that initiates the moving and returns a string result.
 
 ### Models Layer
 #### Board Class
