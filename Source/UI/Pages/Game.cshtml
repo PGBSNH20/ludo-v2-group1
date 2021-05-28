@@ -39,7 +39,7 @@
         <div class="form-check">
             @for (int i = 0; i < Model.Board.Players.Count; i++)
             {
-                <input class="form-check-input" type="radio" name="user" id=@String.Concat("user", i) value=@Model.Board.Players[i].Name />
+                <input class="form-check-input" type="radio" name="user" id=@String.Concat("user", i) value=@Model.Board.Players[i].Name checked />
                 <label for=@String.Concat("user", i)>@Model.Board.Players[i].Name - @Model.Board.Players[i].Tokens[0].Color</label><br>
             }
         </div>
