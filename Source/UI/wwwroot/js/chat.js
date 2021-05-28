@@ -12,6 +12,7 @@ var colors = ["b", "y", "r", "g"];
 
 window.onload = UpdateBoard();
 connection.on("ReceiveMessage", function (user, message) { // A connection on SingalR method SendMessage returns a string in the message list html
+    // creates a message with game progress information and adds it to the messagesList
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + msg;
     var li = document.createElement("li");
@@ -21,8 +22,9 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     var messagesList = document.getElementById("messagesList");
     var latestMessage = messagesList.firstChild;
     messagesList.insertBefore(li, latestMessage);
-      document.getElementById("messagesList").appendChild(br);
+    document.getElementById("messagesList").appendChild(br);
 
+    // if user won
     if (msg.indexOf("Win") > -1) {
         document.getElementById("prompt").innerHTML = encodedMsg;
         document.getElementsByClassName("gameProgressInfo")[0].style.display = 'block';
@@ -31,6 +33,7 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
         document.getElementById("passMoveButton").style.display = 'none';
         document.getElementById("newGameButton").style.display = 'block';
     }
+    // if it's not a win yet 
     else {
         UpdateBoard();
     }
@@ -38,6 +41,7 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
 
 connection.on("GetPlayerTurn", function(playerName) {
     var isPlayerTurn = playerName.localeCompare(selectedPlayer);
+    // if it is users turn to move
     if (isPlayerTurn == 0) {
         document.getElementById("dice").innerHTML = "";
         document.getElementById("prompt").innerHTML = "Roll the dice";
@@ -46,6 +50,7 @@ connection.on("GetPlayerTurn", function(playerName) {
         document.getElementById("moveButton").disabled = true;
         document.getElementById("passMoveButton").disabled = true;
     }
+    // if its somepne else turn to move
     else {
         document.getElementsByClassName("game")[0].removeEventListener("click", SelectToken);
         document.getElementsByClassName("gameProgressInfo")[0].style.display = 'none';
@@ -58,7 +63,7 @@ connection.start().then(function () { // Start connection
     return console.error(err.toString());
 });
 
-document.getElementById("userSubmit").addEventListener("click", function(event) {
+document.getElementById("userSubmit").addEventListener("click", function(event) { //user selectes the player and joins the chat group
     connection.invoke("JoinGroup", groupName).catch(function (err) {
         return console.error(err.toString());
     });
@@ -76,7 +81,8 @@ document.getElementById("userSubmit").addEventListener("click", function(event) 
     });
 });
 
-document.getElementById("rollDiceButton").addEventListener("click", async  function (event) { // Get username, and dice API roll when clicking, then join
+document.getElementById("rollDiceButton").addEventListener("click", async  function (event) {
+    // calls the method that make API request and get diceNumber 
     diceRoll = await getDice();
     document.getElementById("dice").innerHTML = "Dice: " + diceRoll.toString();
     document.getElementById("prompt").innerHTML = "Choose a token";
@@ -106,7 +112,7 @@ async function sendDice(dice, tokenID) {
     }
 }
 
-
+// Get informations from API about position of tokens and places tokens on the board
 async function UpdateBoard() {
     // remove all tokens from the board if they are there
     if (oldTokens.length != 0) {
@@ -149,33 +155,33 @@ async function UpdateBoard() {
     }
 }
 
+// Mark the token selected by the user
 function SelectToken(e) {
    
-    var selectedSquare = e.target.id;
+    var selectedSquare = e.target.id; // SquareId that the user clicked on
     var squaresWithPlayersTokens = GetSquaresWithPlayersTokens();
    
     var indexOfSelectedToken = squaresWithPlayersTokens.indexOf(selectedSquare);
+    // if user clicked on her token 
     if (indexOfSelectedToken > -1) {
         document.getElementById("prompt").innerHTML = "You have chosen a token on the square " + selectedSquare;
         selectedToken = board.players.find(p => p.name == selectedPlayer).tokens[indexOfSelectedToken];
         document.getElementById("moveButton").disabled = false;
 
-        if (markedCellId != null) {
+        if (markedCellId != null) { //removes the previous selection
             document.getElementById(markedCellId).classList.remove("selectionToken");
         }
         markedCellId = selectedSquare;
         document.getElementById(markedCellId).classList.add("selectionToken");
-
-        document.getElementById(markedCellId).classList.add("selectionToken");
     }
+    //if user clicked on an empty square or someone else's token 
     else {
         document.getElementById("prompt").innerHTML = "Choose a token";
         document.getElementById("moveButton").disable = true;
-        if (markedCellId != null) {
+        if (markedCellId != null) { //removes the previous selection
             document.getElementById(markedCellId).classList.remove("selectionToken");
             markedCellId = null;
         }
-
     }
 }
 
@@ -197,9 +203,10 @@ function GetSquaresWithPlayersTokens() {
 }
 
 document.getElementById("moveButton").addEventListener("click", async function (event) {
-
+    // calls the method that makes API request and moves selected token
     var movementResult = await sendDice(diceRoll, selectedToken.id);
 
+    // if user won 
     if (movementResult.indexOf("Win") > -1) {
         // Deletes the game from the DB 
         try {
@@ -211,8 +218,8 @@ document.getElementById("moveButton").addEventListener("click", async function (
         connection.invoke("SendMessage", groupName, selectedPlayer, ": " + movementResult).catch(function (err) {
             return console.error(err.toString());
         });
-
     }
+     // if user can move selected token but it's not a win yet
     else if (movementResult.indexOf("You made a move!") > -1 || movementResult.indexOf("Token at the finish!")>-1) {
         connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
             return console.error(err.toString());
@@ -224,9 +231,10 @@ document.getElementById("moveButton").addEventListener("click", async function (
             return console.error(err.toString());
         });
     }
+    // if user can't move selected token
     else {
 
-        if (markedCellId != null) {
+        if (markedCellId != null) { //removes selection from the token
             document.getElementById(markedCellId).classList.remove("selectionToken");
             markedCellId = null;
         }
