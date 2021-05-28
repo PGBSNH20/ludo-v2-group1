@@ -33,6 +33,7 @@ namespace Ludo.API.Data
                 if (players.Count() >= 4) return Task.FromException(new ArgumentException("Exceeded the number of players"));
 
                 //Validate player name
+                playerName = playerName.Trim();
                 string sameNameInDB = players.Select(p => p.Name).FirstOrDefault(name => name.ToLower() == playerName.ToLower());
                 if (string.IsNullOrEmpty(playerName) || !string.IsNullOrEmpty(sameNameInDB) || string.IsNullOrWhiteSpace(playerName))
                     return Task.FromException(new ArgumentException("Choose a different name"));
@@ -65,14 +66,17 @@ namespace Ludo.API.Data
         }
         public async Task<string> GetPlayerTurn(string gameName)
         {
-            Board board = await _context.Board.FirstAsync(n => n.BoardName == gameName);
+            Board board = await _context.Board.FirstOrDefaultAsync(n => n.BoardName == gameName);
+            if (board == null) return "";
             return board.PlayerTurnName;
         }
         public async Task<Task> AddPlayerTurnName(string gameName, string playerName)
         {
-            Board board = await _context.Board.Where(n => n.BoardName == gameName).Include(p => p.Players).FirstAsync();
+            Board board = await _context.Board.Where(n => n.BoardName == gameName).Include(p => p.Players).FirstOrDefaultAsync();
+            if (board == null) return null;
             var list = board.Players;
             int index = list.FindIndex(x => x.Name.ToLower().Equals(playerName.ToLower()));
+            if (index == -1) return null;
             if (index + 1 > list.Count - 1)
                 index = -1;
             board.PlayerTurnName = list[index + 1].Name;
