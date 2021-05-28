@@ -15,11 +15,13 @@ connection.on("ReceiveMessage", function (user, message) { // A connection on Si
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var encodedMsg = user + msg;
     var li = document.createElement("li");
+    var br = document.createElement("br");
     var timeNow = new Date();
     li.textContent = timeNow.getHours() + ":" + timeNow.getMinutes() + ":" + timeNow.getSeconds() +"  " + encodedMsg;
     var messagesList = document.getElementById("messagesList");
     var latestMessage = messagesList.firstChild;
     messagesList.insertBefore(li, latestMessage);
+      document.getElementById("messagesList").appendChild(br);
 
     if (msg.indexOf("win") > -1) {
         document.getElementById("prompt").innerHTML = encodedMsg;

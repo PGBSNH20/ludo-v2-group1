@@ -1,26 +1,44 @@
 ﻿@page
+@model Ludo.Web.Pages.IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-<center>
-    <br />
-    <div class="card text-center" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">New Game</h5>
-            <p class="card-text">Create a new ludo game with up to 4 players or add new players to an existing game</p>
-            <a asp-page="/Newgame" class="btn btn-primary">New Game</a>
+
+<div class="container my-5">
+    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+        <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
+            <h1 class="display-4 fw-bold lh-1">Ludo 2</h1>
+            <p class="lead">Host a new game for up to 4 players, or join an existing game.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4 mb-lg-3">
+                <a asp-page="/NewGame"><button type="button" class="btn btn-primary btn-lg px-4 me-md-2 fw-bold">New Game</button></a>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4" data-toggle="modal" data-target="#exampleModal">Join Game</button>
+            </div>
+        </div>
+        <div class="col-lg-4 offset-lg-1 p-0 overflow-hidden shadow-lg">
+            <img class="rounded-lg-3" src="images/ludo.jpg" alt="" width="600" height="600">
         </div>
     </div>
-    <br />
-    <h3>Or</h3>
-    <br />
-    <div class="card text-center" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">Join Game</h5>
-            <p class="card-text">Join an existing game using name</p>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Game Name" aria-label="Game Name" aria-describedby="basic-addon2">
-                <input type="button" class="btn-primary" value="Join" />
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Join Ludo Game</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <form method="post">
+                        <input asp-for="NameOfGame" type="text" class="form-control" placeholder="Game Name" aria-label="Game Name" aria-describedby="basic-addon2">
+                        <br/>
+                        <div class="input-group-append">
+                            <input class="btn btn-outline-secondary" type="submit" asp-page-handler="StartGame" value="Join">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-
-</center>
+</div>
