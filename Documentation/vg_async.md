@@ -62,15 +62,23 @@ public async Task<string> GetPlayerTurn(string gameName)
         }
 ```
 ##### Javascript
-Javascript jämför namnet på spelaren tur med klientens namn, om det är samma så enablas dice knappen.
+Javascript jämför namnet på spelaren tur med klientens namn, om det är samma då aktiveras knapparna för att börja spela.
 ```JavaScript
 connection.on("GetPlayerTurn", function(playerName) {
-    document.getElementById("playerTurn").innerHTML = "Player Turn - " + playerName;
-    document.getElementById("sendButton").disabled = true;
-
     var isPlayerTurn = playerName.localeCompare(selectedPlayer);
-    if(isPlayerTurn == 0)
-        document.getElementById("sendButton").disabled = false;
+    if (isPlayerTurn == 0) {
+        document.getElementById("dice").innerHTML = "";
+        document.getElementById("prompt").innerHTML = "Roll the dice";
+        document.getElementsByClassName("gameProgressInfo")[0].style.display = 'block';
+        document.getElementById("rollDiceButton").disabled = false;
+        document.getElementById("moveButton").disabled = true;
+        document.getElementById("passMoveButton").disabled = true;
+    }
+    else {
+        document.getElementsByClassName("game")[0].removeEventListener("click", SelectToken);
+        document.getElementsByClassName("gameProgressInfo")[0].style.display = 'none';
+        document.getElementById("prompt").innerHTML = "Player Turn - " + playerName;
+    }
 });
 ```
 ### Add Player Turn
@@ -92,7 +100,7 @@ public async Task<HttpResponseMessage> AddPlayerTurn(string gameName, string pla
         }
 ```
 ##### Javascript
-Triggas vid dice roll
+Metoden triggar vid dice roll samt när användaren trycker på knappar ``Move token`` och ``Pass move``.
 ```Javascript
 
     connection.invoke("AddPlayerTurn", groupName, selectedPlayer).catch(function (err) {
