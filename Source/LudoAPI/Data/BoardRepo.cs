@@ -64,6 +64,8 @@ namespace Ludo.API.Data
 
         public async Task<Task> AddBoard(string boardName)
         {
+            if (string.IsNullOrEmpty(boardName)|| string.IsNullOrWhiteSpace(boardName)) return Task.FromException(new ArgumentException("Bad request"));
+            boardName = boardName.Trim();
             Board board = GameFactory.CreateBoard(boardName);
             try
             {

@@ -33,6 +33,7 @@ namespace Ludo.API.Data
                 if (players.Count() >= 4) return Task.FromException(new ArgumentException("Exceeded the number of players"));
 
                 //Validate player name
+                playerName = playerName.Trim();
                 string sameNameInDB = players.Select(p => p.Name).FirstOrDefault(name => name.ToLower() == playerName.ToLower());
                 if (string.IsNullOrEmpty(playerName) || !string.IsNullOrEmpty(sameNameInDB) || string.IsNullOrWhiteSpace(playerName))
                     return Task.FromException(new ArgumentException("Choose a different name"));
