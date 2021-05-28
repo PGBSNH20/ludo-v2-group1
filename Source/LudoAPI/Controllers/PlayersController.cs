@@ -35,6 +35,7 @@ namespace Ludo.API.Controllers
         public async Task<IActionResult> GetPlayers(string gameName)
         {
             var result = await _playerRepo.GetPlayers(gameName);
+            if (result.Count == 0) return NotFound();
             return Ok(result);
         }
 
